@@ -26,6 +26,7 @@ class Game {
     this.player = new Player(this);
     this.numberOfObstacles = 10;
     this.obstacles = [];
+    this.minimumObstacleDistance = 70;
 
     this.mouse = {
       x: this.width * 0.5,
@@ -90,7 +91,8 @@ class Game {
         }
       });
 
-      const margin = testObstacle.collisionRadius * 2;
+      const margin =
+        testObstacle.collisionRadius + this.minimumObstacleDistance;
 
       !collision &&
         testObstacle.spriteX > 0 &&
