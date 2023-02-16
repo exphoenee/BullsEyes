@@ -15,27 +15,56 @@ class Player {
     this.dx = 0;
     this.dy = 0;
     this.speedModifier = 5;
+
+    this.image = document.getElementById("bull");
+    this.spriteWidth = 255;
+    this.spriteHeight = 255;
+    this.width = this.spriteWidth;
+    this.height = this.spriteHeight;
+    this.spriteOffsetX = 0.5;
+    this.spriteOffsetY = 0.85;
+    this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
+    this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
+    this.spriteDirection = 0;
+    this.animationFrame = 0;
   }
 
   draw() {
-    this.game.context.beginPath();
-    this.game.context.arc(
-      this.collisionX,
-      this.collisionY,
-      this.collisionRadius,
-      0,
-      Math.PI * 2,
-      false
+    this.game.context.drawImage(
+      this.image,
+      this.animationFrame * this.spriteWidth,
+      this.spriteDirection * this.spriteHeight,
+      this.spriteWidth,
+      this.spriteHeight,
+      this.spriteX,
+      this.spriteY,
+      this.width,
+      this.height
     );
-    this.game.context.save();
-    this.game.context.globalAlpha = this.collisionOpacity;
-    this.game.context.fill();
-    this.game.context.restore();
-    this.game.context.stroke();
-    this.game.context.beginPath();
-    this.game.context.moveTo(this.collisionX, this.collisionY);
-    this.game.context.lineTo(this.game.mouse.x, this.game.mouse.y);
-    this.game.context.stroke();
+    this.drwaHitbox();
+  }
+
+  drwaHitbox() {
+    if (this.game.debug) {
+      this.game.context.beginPath();
+      this.game.context.arc(
+        this.collisionX,
+        this.collisionY,
+        this.collisionRadius,
+        0,
+        Math.PI * 2,
+        false
+      );
+      this.game.context.save();
+      this.game.context.globalAlpha = this.collisionOpacity;
+      this.game.context.fill();
+      this.game.context.restore();
+      this.game.context.stroke();
+      this.game.context.beginPath();
+      this.game.context.moveTo(this.collisionX, this.collisionY);
+      this.game.context.lineTo(this.game.mouse.x, this.game.mouse.y);
+      this.game.context.stroke();
+    }
   }
 
   obstacleCollision() {
@@ -50,7 +79,25 @@ class Player {
     });
   }
 
-  movePlayer() {
+  playerDirection() {
+    const angleStep = 360 / 8;
+
+    const angle = Math.floor(
+      ((Math.atan2(
+        this.game.mouse.y - this.collisionY,
+        this.game.mouse.x - this.collisionX
+      ) *
+        360) /
+        (2 * Math.PI) +
+        90 +
+        360) %
+        360
+    );
+
+    this.spriteDirection = Math.floor(angle / angleStep);
+  }
+
+  playerMove() {
     this.dx = this.game.mouse.x - this.collisionX;
     this.dy = this.game.mouse.y - this.collisionY;
     const distance = Math.hypot(this.dy, this.dx);
@@ -65,11 +112,15 @@ class Player {
 
     this.collisionX += this.sppedX * this.speedModifier;
     this.collisionY += this.speedY * this.speedModifier;
+
+    this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
+    this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
   }
 
   update() {
-    this.movePlayer();
+    this.playerMove();
     this.obstacleCollision();
+    this.playerDirection();
   }
 }
 
