@@ -1,5 +1,6 @@
 import Player from "./Player.js";
 import Obstacle from "./Obstacle.js";
+import Egg from "./Egg.js";
 
 class Game {
   constructor() {
@@ -7,7 +8,6 @@ class Game {
       return Game.instance;
     }
     Game.instance = this;
-
     this.debug = true;
 
     this.fps = 60;
@@ -30,6 +30,14 @@ class Game {
     this.numberOfObstacles = 10;
     this.obstacles = [];
     this.minimumObstacleDistance = 70;
+
+    this.score = 0;
+
+    this.numberOfEggs = 10;
+    this.eggs = [];
+    this.minimumEggDistance = 70;
+    this.eggTimer = 0;
+    this.eggInterval = 750;
 
     this.mouse = {
       x: this.width * 0.5,
@@ -62,6 +70,8 @@ class Game {
   render() {
     this.context.clearRect(0, 0, this.width, this.height);
     this.obstacles.forEach((obstacle) => obstacle.draw());
+    this.eggs.forEach((egg) => egg.draw());
+    this.eggs.forEach((egg) => egg.update());
     this.player.draw();
     this.player.update();
   }
@@ -72,7 +82,14 @@ class Game {
     const distance = Math.hypot(dy, dx);
     const sumOfRadii = a.collisionRadius + b.collisionRadius + distanceBuffer;
     if (distance < sumOfRadii) {
-      return { collision: distance < sumOfRadii, distance, sumOfRadii, dx, dy };
+      return {
+        collision: distance < sumOfRadii,
+        distance,
+        sumOfRadii,
+        dx,
+        dy,
+        names: [a.name, b.name],
+      };
     }
   }
 
@@ -107,10 +124,24 @@ class Game {
     }
   }
 
+  addEgg() {
+    this.eggs.push(new Egg(this));
+  }
+
   animate(timeStamp) {
     if (timeStamp - this.lastRender > 1000 / 60) {
       this.render();
       this.lastRender = timeStamp;
+
+      if (
+        this.eggTimer > this.eggInterval &&
+        this.eggs.length < this.numberOfEggs
+      ) {
+        this.addEgg();
+        this.eggTimer = 0;
+      } else {
+        this.eggTimer += Math.random() * 16;
+      }
     }
     window.requestAnimationFrame(this.animate.bind(this));
   }
