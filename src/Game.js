@@ -63,7 +63,7 @@ class Game {
     const distance = Math.hypot(dy, dx);
     const sumOfRadii = a.collisionRadius + b.collisionRadius + distanceBuffer;
     if (distance < sumOfRadii) {
-      return { status: (distance < sumOfRadii), distance, sumOfRadii, dx, dy }
+      return { collision: distance < sumOfRadii, distance, sumOfRadii, dx, dy };
     }
   }
 
@@ -80,8 +80,7 @@ class Game {
         const b = obstacle;
         const distanceBuffer = 150;
 
-        const check = this.checkCollision(a, b, distanceBuffer);
-        if (check) {
+        if (this.checkCollision(a, b, distanceBuffer)) {
           collision = true;
         }
       });
