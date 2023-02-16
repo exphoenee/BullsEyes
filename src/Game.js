@@ -52,9 +52,9 @@ class Game {
 
   render() {
     this.context.clearRect(0, 0, this.width, this.height);
+    this.obstacles.forEach((obstacle) => obstacle.draw());
     this.player.draw();
     this.player.update();
-    this.obstacles.forEach((obstacle) => obstacle.draw());
   }
 
   checkCollision(a, b, distanceBuffer = 0) {
@@ -62,7 +62,9 @@ class Game {
     const dy = b.collisionY - a.collisionY;
     const distance = Math.hypot(dy, dx);
     const sumOfRadii = a.collisionRadius + b.collisionRadius + distanceBuffer;
-    return (distance < sumOfRadii)
+    if (distance < sumOfRadii) {
+      return { status: (distance < sumOfRadii), distance, sumOfRadii, dx, dy }
+    }
   }
 
   init() {
