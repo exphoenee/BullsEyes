@@ -21,10 +21,7 @@
   /* background: rgba(0, 0, 0, 0.5); */
 }
 
-#obstacles {
+.images {
   display: none;
 }
 
-#bull {
-  display: none;
-}
