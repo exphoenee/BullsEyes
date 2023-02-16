@@ -21,8 +21,8 @@ class Game {
     this.context.lineWidth = 3;
 
     this.player = new Player(this);
-    this.obstacle = [];
     this.numberOfObstacles = 10;
+    this.obstacles = [];
 
     this.mouse = {
       x: this.width * 0.5,
@@ -53,11 +53,28 @@ class Game {
     this.context.clearRect(0, 0, this.width, this.height);
     this.player.draw();
     this.player.update();
+    this.obstacles.forEach((obstacle) => obstacle.draw());
   }
 
   init() {
-    for (let i = 0; i < this.numberOfObstacles; i++)
-      this.obstacle.push(new Obstacle(this));
+    let attempts = 0;
+    while (this.obstacles.length < this.numberOfObstacles && attempts < 1000) {
+      let testObstacle = new Obstacle(this);
+      attempts++;
+
+      let collision = false;
+
+      [...this.obstacles, this.player].forEach((obstacle) => {
+        const dx = testObstacle.collisionX - obstacle.collisionX;
+        const dy = testObstacle.collisionY - obstacle.collisionY;
+        const distance = Math.hypot(dx, dy);
+        const sumOfRadii =
+          testObstacle.collisionRadius + obstacle.collisionRadius;
+        if (distance < sumOfRadii) collision = true;
+      });
+
+      !collision && this.obstacles.push(testObstacle);
+    }
   }
 }
 
