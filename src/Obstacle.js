@@ -1,6 +1,11 @@
+import { obstacle } from "./constants/names";
+
 class Obstacle {
   constructor(game) {
     this.game = game;
+
+    this.name = obstacle;
+
     this.collisionX = Math.random() * this.game.width;
     this.collisionY = Math.random() * this.game.height;
     this.collisionRadius = 50;
@@ -39,6 +44,10 @@ class Obstacle {
       this.game.context.restore();
       this.game.context.stroke();
     }
+  }
+
+  areYou(name) {
+    return this.name === name;
   }
 
   draw() {
