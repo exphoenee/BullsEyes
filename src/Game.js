@@ -8,6 +8,8 @@ class Game {
     }
     Game.instance = this;
 
+    this.debug = true;
+
     this.width = 1280;
     this.height = 720;
     this.topMargin = 260;
@@ -47,6 +49,9 @@ class Game {
         this.mouse.x = e.offsetX;
         this.mouse.y = e.offsetY;
       }
+    });
+    window.addEventListener("keydown", (e) => {
+      if (e.key == "d") this.debug = !this.debug;
     });
   }
 
