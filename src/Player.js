@@ -37,7 +37,20 @@ class Player {
     this.game.context.lineTo(this.game.mouse.x, this.game.mouse.y);
     this.game.context.stroke();
   }
-  update() {
+
+  obstacleCollision() {
+    this.game.obstacles.forEach((obstacle) => {
+      const { collision, distance, sumOfRadii, dx, dy } =
+        this.game.checkCollision(this, obstacle) || {};
+
+      if (collision) {
+        this.collisionX -= (dx / distance) * (sumOfRadii - distance);
+        this.collisionY -= (dy / distance) * (sumOfRadii - distance);
+      }
+    });
+  }
+
+  movePlayer() {
     this.dx = this.game.mouse.x - this.collisionX;
     this.dy = this.game.mouse.y - this.collisionY;
     const distance = Math.hypot(this.dy, this.dx);
@@ -52,16 +65,11 @@ class Player {
 
     this.collisionX += this.sppedX * this.speedModifier;
     this.collisionY += this.speedY * this.speedModifier;
+  }
 
-    this.game.obstacles.forEach((obstacle) => {
-      const { collision, distance, sumOfRadii, dx, dy } =
-        this.game.checkCollision(this, obstacle) || {};
-
-      if (collision) {
-        this.collisionX -= (dx / distance) * (sumOfRadii - distance);
-        this.collisionY -= (dy / distance) * (sumOfRadii - distance);
-      }
-    });
+  update() {
+    this.movePlayer();
+    this.obstacleCollision();
   }
 }
 
