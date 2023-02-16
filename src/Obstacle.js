@@ -11,10 +11,25 @@ class Obstacle {
     this.spriteHeight = 250;
     this.width = this.spriteWidth;
     this.height = this.spriteHeight;
+    this.spriteX = this.collisionX - this.width * 0.49;
+    this.spriteY = this.collisionY - this.height * 0.85;
+
+    this.frameX = Math.floor(Math.random()*4);
+    this.frameY = Math.floor(Math.random()*3);
   }
 
   draw() {
-    this.game.context.drawImage(this.image, this.collisionX, this.collisionY, this.width, this.height);
+    this.game.context.drawImage(
+      this.image,
+      this.frameX * this.spriteWidth,
+      this.frameY * this.spriteHeight,
+      this.spriteWidth,
+      this.spriteHeight,
+      this.spriteX,
+      this.spriteY,
+      this.width,
+      this.height
+    );
     this.game.context.beginPath();
     this.game.context.arc(
       this.collisionX,
