@@ -54,10 +54,13 @@ class Player {
     this.collisionY += this.speedY * this.speedModifier;
 
     this.game.obstacles.forEach((obstacle) => {
-      const { status, distance, sumofRadii, dx, dy } = this.game.checkCollision(
-        this,
-        obstacle
-      );
+      const { collision, distance, sumOfRadii, dx, dy } =
+        this.game.checkCollision(this, obstacle) || {};
+
+      if (collision) {
+        this.collisionX -= (dx / distance) * (sumOfRadii - distance);
+        this.collisionY -= (dy / distance) * (sumOfRadii - distance);
+      }
     });
   }
 }
