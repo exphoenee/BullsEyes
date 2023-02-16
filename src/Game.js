@@ -10,6 +10,9 @@ class Game {
 
     this.debug = true;
 
+    this.fps = 60;
+    this.lastRender = 0;
+
     this.width = 1280;
     this.height = 720;
     this.topMargin = 260;
@@ -73,11 +76,10 @@ class Game {
     }
   }
 
-  init() {
+  generateObstacles() {
     let attempts = 0;
     while (this.obstacles.length < this.numberOfObstacles && attempts < 500) {
       let testObstacle = new Obstacle(this);
-      attempts++;
 
       let collision = false;
 
@@ -100,7 +102,22 @@ class Game {
         testObstacle.collisionY > this.topMargin + margin &&
         testObstacle.collisionY < this.height - margin &&
         this.obstacles.push(testObstacle);
+
+      attempts++;
     }
+  }
+
+  animate(timeStamp) {
+    if (timeStamp - this.lastRender > 1000 / 60) {
+      this.render();
+      this.lastRender = timeStamp;
+    }
+    window.requestAnimationFrame(this.animate.bind(this));
+  }
+
+  init() {
+    this.generateObstacles();
+    this.animate(this.lastRender);
   }
 }
 
