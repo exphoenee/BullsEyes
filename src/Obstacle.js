@@ -9,13 +9,36 @@ class Obstacle {
     this.image = document.getElementById("obstacles");
     this.spriteWidth = 250;
     this.spriteHeight = 250;
+    this.spriteOffsetX = 0.49;
+    this.spriteOffsetY = 0.85;
     this.width = this.spriteWidth;
     this.height = this.spriteHeight;
-    this.spriteX = this.collisionX - this.width * 0.49;
-    this.spriteY = this.collisionY - this.height * 0.85;
+    this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
+    this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
 
-    this.frameX = Math.floor(Math.random()*4);
-    this.frameY = Math.floor(Math.random()*3);
+    this.frameX = Math.floor(Math.random() * 4);
+    this.frameY = Math.floor(Math.random() * 3);
+
+    this.game.debug = this.game.debug;
+  }
+
+  drawHitbox() {
+    if (this.game.debug) {
+      this.game.context.beginPath();
+      this.game.context.arc(
+        this.collisionX,
+        this.collisionY,
+        this.collisionRadius,
+        0,
+        Math.PI * 2,
+        false
+      );
+      this.game.context.save();
+      this.game.context.globalAlpha = this.collisionOpacity;
+      this.game.context.fill();
+      this.game.context.restore();
+      this.game.context.stroke();
+    }
   }
 
   draw() {
@@ -30,20 +53,7 @@ class Obstacle {
       this.width,
       this.height
     );
-    this.game.context.beginPath();
-    this.game.context.arc(
-      this.collisionX,
-      this.collisionY,
-      this.collisionRadius,
-      0,
-      Math.PI * 2,
-      false
-    );
-    this.game.context.save();
-    this.game.context.globalAlpha = this.collisionOpacity;
-    this.game.context.fill();
-    this.game.context.restore();
-    this.game.context.stroke();
+    this.drawHitbox();
   }
 }
 
