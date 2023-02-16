@@ -1,10 +1,16 @@
+import { player } from "./constants/names";
+
 class Player {
   constructor(game) {
     if (typeof Player.instance === "object") {
       return Player.instance;
     }
     Player.instance = this;
+
     this.game = game;
+
+    this.name = player;
+
     this.collisionX = this.game.width * 0.5;
     this.collisionY = this.game.height * 0.5;
     this.collisionRadius = 50;
@@ -27,6 +33,10 @@ class Player {
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
     this.spriteDirection = 0;
     this.animationFrame = 0;
+  }
+
+  areYou(name) {
+    return this.name === name;
   }
 
   draw() {
@@ -122,6 +132,8 @@ class Player {
     if (this.collisionY > this.game.height - this.collisionRadius)
       this.collisionY = this.game.height - this.collisionRadius;
 
+    this.animationFrame =
+      this.animationFrame < 58 ? this.animationFrame + 1 : 0;
 
     this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
