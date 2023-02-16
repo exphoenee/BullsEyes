@@ -10,6 +10,7 @@ class Game {
 
     this.width = 1280;
     this.height = 720;
+    this.topMargin = 260;
 
     this.canvas = document.getElementById("canvas1");
     this.canvas.width = this.width;
@@ -56,24 +57,41 @@ class Game {
     this.obstacles.forEach((obstacle) => obstacle.draw());
   }
 
+  checkCollision(a, b, distanceBuffer = 0) {
+    const dx = b.collisionX - a.collisionX;
+    const dy = b.collisionY - a.collisionY;
+    const distance = Math.hypot(dy, dx);
+    const sumOfRadii = a.collisionRadius + b.collisionRadius + distanceBuffer;
+    return (distance < sumOfRadii)
+  }
+
   init() {
     let attempts = 0;
-    while (this.obstacles.length < this.numberOfObstacles && attempts < 1000) {
+    while (this.obstacles.length < this.numberOfObstacles && attempts < 500) {
       let testObstacle = new Obstacle(this);
       attempts++;
 
       let collision = false;
 
       [...this.obstacles, this.player].forEach((obstacle) => {
-        const dx = testObstacle.collisionX - obstacle.collisionX;
-        const dy = testObstacle.collisionY - obstacle.collisionY;
-        const distance = Math.hypot(dx, dy);
-        const sumOfRadii =
-          testObstacle.collisionRadius + obstacle.collisionRadius;
-        if (distance < sumOfRadii) collision = true;
+        const a = testObstacle;
+        const b = obstacle;
+        const distanceBuffer = 150;
+
+        const check = this.checkCollision(a, b, distanceBuffer);
+        if (check) {
+          collision = true;
+        }
       });
 
-      !collision && this.obstacles.push(testObstacle);
+      const margin = testObstacle.collisionRadius * 2;
+
+      !collision &&
+        testObstacle.spriteX > 0 &&
+        testObstacle.spriteX < this.width - testObstacle.width &&
+        testObstacle.collisionY > this.topMargin + margin &&
+        testObstacle.collisionY < this.height - margin &&
+        this.obstacles.push(testObstacle);
     }
   }
 }
