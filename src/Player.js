@@ -54,7 +54,10 @@ class Player {
     this.collisionY += this.speedY * this.speedModifier;
 
     this.game.obstacles.forEach((obstacle) => {
-      // console.log(this.game.checkCollision(this, obstacle));
+      const { status, distance, sumofRadii, dx, dy } = this.game.checkCollision(
+        this,
+        obstacle
+      );
     });
   }
 }
