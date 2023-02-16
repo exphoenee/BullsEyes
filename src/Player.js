@@ -18,7 +18,7 @@ class Player {
 
     this.image = document.getElementById("bull");
     this.spriteWidth = 255;
-    this.spriteHeight = 255;
+    this.spriteHeight = 256;
     this.width = this.spriteWidth;
     this.height = this.spriteHeight;
     this.spriteOffsetX = 0.5;
@@ -112,6 +112,16 @@ class Player {
 
     this.collisionX += this.sppedX * this.speedModifier;
     this.collisionY += this.speedY * this.speedModifier;
+
+    if (this.collisionX < this.collisionRadius)
+      this.collisionX = this.collisionRadius;
+    if (this.collisionX > this.game.width - this.collisionRadius)
+      this.collisionX = this.game.width - this.collisionRadius;
+    if (this.collisionY < this.game.topMargin + this.collisionRadius)
+      this.collisionY = this.game.topMargin + this.collisionRadius;
+    if (this.collisionY > this.game.height - this.collisionRadius)
+      this.collisionY = this.game.height - this.collisionRadius;
+
 
     this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
