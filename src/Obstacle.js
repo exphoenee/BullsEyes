@@ -6,10 +6,15 @@ class Obstacle {
     this.collisionRadius = 50;
     this.collisionOpacity = 0.5;
 
-    this.draw();
+    this.image = document.getElementById("obstacles");
+    this.spriteWidth = 250;
+    this.spriteHeight = 250;
+    this.width = this.spriteWidth;
+    this.height = this.spriteHeight;
   }
 
   draw() {
+    this.game.context.drawImage(this.image, this.collisionX, this.collisionY, this.width, this.height);
     this.game.context.beginPath();
     this.game.context.arc(
       this.collisionX,
