@@ -44,11 +44,14 @@ class Larva {
     this.animationFrame = 0;
 
     // particle effect properties
-    this.numberOfFireFlies = 10;
+    this.numberOfFireFlies = 15;
     this.colorOfFireFlies = "rgba(255, 0, 0, 0.5)";
 
-    this.numberOfSparks = 10;
+    this.numberOfSparks = 15;
     this.colorOfSparks = "rgba(255, 255, 0, 0.5)";
+
+    this.opacity = 1;
+    this.opacityModifier = 0.05;
   }
 
   areYou(name) {
@@ -58,6 +61,8 @@ class Larva {
   initPosition() {}
 
   draw() {
+    this.game.context.save();
+    this.game.context.globalAlpha = this.opacity;
     this.game.context.drawImage(
       this.image,
       this.animationFrame * this.spriteWidth,
@@ -69,6 +74,7 @@ class Larva {
       this.width,
       this.height
     );
+    this.game.context.restore();
     this.drwaHitbox();
   }
 
@@ -152,16 +158,28 @@ class Larva {
     }
   }
 
+  removeObject() {
+    this.game.larvas = this.game.larvas.filter(
+      (larva) => larva.id !== this.id
+    );
+  }
+
   eaten() {
-    this.game.larvas = this.game.larvas.filter((larva) => larva.id !== this.id);
-    this.game.score -= 1;
-    this.addSpark();
+    this.opacity -= this.opacityModifier;
+    if (this.opacity <= 0) {
+      this.game.score -= 1;
+      this.removeObject();
+      this.addSpark();
+    }
   }
 
   survived() {
-    this.game.score += 1;
-    this.game.larvas = this.game.larvas.filter((larva) => larva.id !== this.id);
-    this.addFireFlies();
+    this.opacity -= this.opacityModifier;
+    if (this.opacity <= 0) {
+      this.game.score += 1;
+      this.removeObject();
+      this.addFireFlies();
+    }
   }
 
   objectMove() {
