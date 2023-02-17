@@ -1,4 +1,9 @@
 import { v4 as uuid } from "uuid";
+
+import Particle from "./Particle";
+import Firefly from "./Firefly";
+import Sparks from "./Sparks";
+
 import { enemy, obstacle, egg, player, larva } from "./constants/names";
 
 class Larva {
@@ -37,6 +42,13 @@ class Larva {
     this.animationFrames = 0;
     this.spriteDirection = 0;
     this.animationFrame = 0;
+
+    // particle effect properties
+    this.numberOfFireFlies = 10;
+    this.colorOfFireFlies = "rgba(255, 0, 0, 0.5)";
+
+    this.numberOfSparks = 10;
+    this.colorOfSparks = "rgba(255, 255, 0, 0.5)";
   }
 
   areYou(name) {
@@ -116,16 +128,40 @@ class Larva {
     this.spriteDirection = Math.floor(angle / angleStep);
   }
 
+  addSpark() {
+    const position = {
+      x: this.collisionX,
+      y: this.collisionY,
+    };
+    for (let i = 0; i < this.numberOfSparks; i++) {
+      this.game.particles.push(
+        new Sparks(this.game, position, this.colorOfSparks)
+      );
+    }
+  }
+
+  addFireFlies() {
+    const position = {
+      x: this.collisionX,
+      y: this.collisionY,
+    };
+    for (let i = 0; i < this.numberOfFireFlies; i++) {
+      this.game.particles.push(
+        new Firefly(this.game, position, this.colorOfFireFlies)
+      );
+    }
+  }
+
   eaten() {
     this.game.larvas = this.game.larvas.filter((larva) => larva.id !== this.id);
     this.game.score -= 1;
-    console.log("eaten");
+    this.addSpark();
   }
 
   survived() {
     this.game.score += 1;
     this.game.larvas = this.game.larvas.filter((larva) => larva.id !== this.id);
-    console.log("survived");
+    this.addFireFlies();
   }
 
   objectMove() {
