@@ -19,8 +19,8 @@ class Game {
     this.deltaTime = 0;
 
     // game properties
-    this.winningScore = 1;
-    this.loosingScore = -1;
+    this.winningScore = 21;
+    this.loosingScore = -10;
     this.gameOver = false;
 
     // game area properties
