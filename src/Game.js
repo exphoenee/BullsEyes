@@ -52,12 +52,18 @@ class Game {
     this.eggTimer = 0;
     this.eggInterval = 1000;
 
-    // egg properties
+    // enemy properties
     this.numberOfEnemies = 6;
     this.enemies = [];
     this.minimumEnemyDistance = 70;
     this.enemyTimer = 0;
     this.enemyInterval = 1000;
+
+    // larva properties
+    this.larvas = [];
+    // hatching properties
+    this.hatchTimer = 0;
+    this.hatchInterval = 5000;
 
     // mouse properties
     this.mouse = {
@@ -93,16 +99,14 @@ class Game {
   render() {
     this.context.clearRect(0, 0, this.width, this.height);
     this.gameObjects = [
-      ...this.obstacles,
       this.player,
+      ...this.obstacles,
       ...this.eggs,
       ...this.enemies,
+      ...this.larvas,
     ];
     this.gameObjects.sort((a, b) => a.collisionY - b.collisionY);
-    this.gameObjects.forEach((object) => {
-      object.draw();
-      object.update();
-    });
+    this.gameObjects.forEach((object) => object.update());
   }
 
   checkCollision(a, b, distanceBuffer = 0) {
@@ -122,7 +126,7 @@ class Game {
     }
   }
 
-  generateObstacles() {
+  addObstacles() {
     let attempts = 0;
     while (
       this.obstacles.length < this.numberOfObstacles &&
@@ -144,7 +148,7 @@ class Game {
       });
 
       const margin =
-        testObstacle.collisionRadius + this.minimumObstacleDistance;
+        testObstacle.collisionRadius + this.minimumObstacleDistance + 20;
 
       !collision &&
         testObstacle.spriteX > 0 &&
@@ -185,7 +189,6 @@ class Game {
         this.enemies.length < this.numberOfEnemies
       ) {
         this.addEnemy();
-        console.log(this.enemies);
         this.enemyTimer = 0;
       } else {
         this.enemyTimer += Math.random() * 16;
@@ -195,7 +198,7 @@ class Game {
   }
 
   init() {
-    this.generateObstacles();
+    this.addObstacles();
     this.animate(this.lastRender);
   }
 }
