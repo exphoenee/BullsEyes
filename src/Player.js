@@ -13,28 +13,39 @@ class Player {
     this.name = player;
     this.id = uuid();
 
+    // image properties
+    this.image = document.getElementById("bull");
+    this.spriteWidth = 255;
+    this.spriteHeight = 256;
+    this.width = this.spriteWidth;
+    this.height = this.spriteHeight;
+
+    // motion properties
     this.sppedX = 0;
     this.speedY = 0;
     this.dx = 0;
     this.dy = 0;
     this.speedModifier = 5;
 
-    this.collisionX = this.game.width * 0.5;
-    this.collisionY = this.game.height * 0.5;
+    //position properties
+    this.collisionX;
+    this.collisionY;
+    this.initPosition();
     this.collisionRadius = 50;
     this.collisionOpacity = 0.5;
-
-    this.image = document.getElementById("bull");
-    this.spriteWidth = 255;
-    this.spriteHeight = 256;
-    this.width = this.spriteWidth;
-    this.height = this.spriteHeight;
     this.spriteOffsetX = 0.5;
     this.spriteOffsetY = 0.85;
     this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
+
+    // animation properties
     this.spriteDirection = 0;
     this.animationFrame = 0;
+  }
+
+  initPosition() {
+    this.collisionX = this.game.width * 0.5;
+    this.collisionY = this.game.height * 0.5;
   }
 
   areYou(name) {
@@ -79,16 +90,18 @@ class Player {
     }
   }
 
-  obstacleCollision() {
-    this.game.obstacles.forEach((obstacle) => {
-      const { collision, distance, sumOfRadii, dx, dy } =
-        this.game.checkCollision(this, obstacle) || {};
+  collision() {
+    [...this.game.obstacles, ...this.game.enemies].forEach((object) => {
+      const collisionInfo = this.game.checkCollision(this, object) || {};
+      const { collision } = collisionInfo;
 
-      if (collision) {
-        this.collisionX -= (dx / distance) * (sumOfRadii - distance);
-        this.collisionY -= (dy / distance) * (sumOfRadii - distance);
-      }
+      if (collision) this.pushObject(collisionInfo);
     });
+  }
+
+  pushObject({ distance, sumOfRadii, dx, dy }) {
+    this.collisionX -= (dx / distance) * (sumOfRadii - distance);
+    this.collisionY -= (dy / distance) * (sumOfRadii - distance);
   }
 
   objectDirection() {
@@ -143,7 +156,7 @@ class Player {
 
   update() {
     this.objectMove();
-    this.obstacleCollision();
+    this.collision();
     this.objectDirection();
   }
 }
