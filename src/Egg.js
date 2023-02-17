@@ -31,6 +31,9 @@ class Egg {
     this.spriteOffsetY = 0.65;
     this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
+
+    // hatching properties
+    this.hatchTimer = 0;
   }
 
   initPosition() {
@@ -73,6 +76,8 @@ class Egg {
       this.width,
       this.height
     );
+    const displayHatchTimer = Math.floor((this.game.hatchInterval-this.hatchTimer) / 1000) + 1;
+    this.game.context.fillText(displayHatchTimer, this.spriteX + this.width*0.4, this.spriteY + this.height*0.3);
     this.drawHitbox();
   }
 
@@ -98,8 +103,8 @@ class Egg {
   }
 
   hatching() {
-    this.game.hatchTimer += 16 + 16 * Math.random();
-    if (this.game.hatchTimer >= this.game.hatchInterval) {
+    this.hatchTimer += 16 + 16 * Math.random();
+    if (this.hatchTimer >= this.game.hatchInterval) {
       console.log("hatched");
       this.game.eggs = this.game.eggs.filter((egg) => egg.id !== this.id);
       const position = {
@@ -107,7 +112,6 @@ class Egg {
         y: this.collisionY,
       };
       this.game.larvas.push(new Larva(this.game, position));
-      console.log(this.game.larvas);
     }
   }
 
