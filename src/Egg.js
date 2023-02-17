@@ -1,3 +1,4 @@
+import { v4 as uuid } from "uuid";
 import { egg, obstacle, player } from "./constants/names.js";
 
 class Egg {
@@ -5,6 +6,7 @@ class Egg {
     this.game = game;
 
     this.name = egg;
+    this.id = uuid();
 
     this.collisionRadius = 40;
     this.margin = this.collisionRadius * 2;
@@ -67,24 +69,46 @@ class Egg {
   }
 
   update() {
-    let collisionObject = [this.game.player, ...this.game.obstacles];
+    let collisionObject = [
+      this.game.player,
+      ...this.game.obstacles,
+      ...this.game.eggs.filter((egg) => egg.id !== this.id),
+    ];
     collisionObject.forEach((object) => {
       const { collision, distance, sumOfRadii, dx, dy } =
         this.game.checkCollision(this, object) || {};
       if (collision) {
-        this.collisionX -= (dx / distance) * (sumOfRadii - distance);
-        this.collisionY -= (dy / distance) * (sumOfRadii - distance);
-
-        object.areYou(obstacle) && this.obstacleCollision();
-        object.areYou(player) && this.playerCollision();
+        object.areYou(obstacle) &&
+          this.obstacleCollision(this, distance, sumOfRadii, dx, dy);
+        object.areYou(player) &&
+          this.playerCollision(this, distance, sumOfRadii, dx, dy);
+        object.areYou(egg) &&
+          this.eggCollision(this, object, distance, sumOfRadii, dx, dy);
       }
     });
   }
 
-  playerCollision() {
+  moveThisEgg(object, distance, sumOfRadii, dx, dy) {
+    object.collisionX -= (dx / distance) * (sumOfRadii - distance);
+    object.collisionY -= (dy / distance) * (sumOfRadii - distance);
+
+    object.spriteX = object.collisionX - object.width * object.spriteOffsetX;
+    object.spriteY = object.collisionY - object.height * object.spriteOffsetY;
+  }
+
+  eggCollision(thisEgg, anotherEgg, distance, sumOfRadii, dx, dy) {
+    this.moveThisEgg(thisEgg, distance, sumOfRadii, dx, dy);
+    // this.moveThisEgg(anotherEgg, distance, sumOfRadii, dx, dy);
+    // this makes a strange effect
+  }
+
+  playerCollision(thisEgg, distance, sumOfRadii, dx, dy) {
+    this.moveThisEgg(thisEgg, distance, sumOfRadii, dx, dy);
     this.game.score += 1;
   }
-  obstacleCollision() {}
+  obstacleCollision(thisEgg, distance, sumOfRadii, dx, dy) {
+    this.moveThisEgg(thisEgg, distance, sumOfRadii, dx, dy);
+  }
 }
 
 export default Egg;
