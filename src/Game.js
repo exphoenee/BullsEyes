@@ -18,6 +18,11 @@ class Game {
     this.lastRender = 0;
     this.deltaTime = 0;
 
+    // game properties
+    this.winningScore = 1;
+    this.loosingScore = -1;
+    this.gameOver = false;
+
     // game area properties
     this.width = 1280;
     this.height = 720;
@@ -55,7 +60,7 @@ class Game {
     this.eggInterval = 1000;
 
     // enemy properties
-    this.numberOfEnemies = 1;
+    this.numberOfEnemies = 6;
     this.enemies = [];
     this.minimumEnemyDistance = 70;
     this.enemyTimer = 0;
@@ -98,6 +103,37 @@ class Game {
     window.addEventListener("keydown", (e) => {
       if (e.key == "d") this.debug = !this.debug;
     });
+
+    // key properties
+    window.addEventListener("keydown", (e) => {
+      if (e.key == "r") {
+        if (this.gameOver) {
+          this.restart();
+        }
+      }
+    });
+  }
+
+  restart() {
+    console.log("restart");
+    console.log(this)
+    this.gameOver = false;
+    this.score = 0;
+    this.obstacles = [];
+    this.eggs = [];
+    this.enemies = [];
+    this.larvas = [];
+    this.particles = [];
+    this.player.initPosition();
+    this.enemyTimer = 0;
+    this.eggTimer = 0;
+    this.lastRender = 0;
+    this.mouse = {
+      x: this.width * 0.5,
+      y: this.height * 0.5,
+      pressed: false,
+    };
+    this.init();
   }
 
   render() {
@@ -113,6 +149,32 @@ class Game {
     this.gameObjects.sort((a, b) => a.collisionY - b.collisionY);
     this.gameObjects.forEach((object) => object.update());
     this.context.fillText(`Score: ${this.score}`, 20, 50);
+  }
+
+  winMessage() {
+    this.context.save();
+    this.context.font = "130px Helvetica";
+    this.context.fillStyle = "rgba(0, 0, 0, 0.5)";
+    this.context.fillRect(0, 0, this.width, this.height);
+    this.context.fillStyle = "white";
+    this.context.textAlign = "center";
+    this.context.fillText("You Won!", this.width * 0.5, this.height * 0.5);
+    this.context.font = "40px Helvetica";
+    this.context.fillText("Press 'R' button to restart.", this.width * 0.5, this.height * 0.5 + 70);
+    this.context.restore();
+  }
+
+  looseMessage() {
+    this.context.save();
+    this.context.font = "130px Helvetica";
+    this.context.fillStyle = "rgba(0, 0, 0, 0.5)";
+    this.context.fillRect(0, 0, this.width, this.height);
+    this.context.fillStyle = "white";
+    this.context.textAlign = "center";
+    this.context.fillText("Game Over!", this.width * 0.5, this.height * 0.5);
+    this.context.font = "40px Helvetica";
+    this.context.fillText("Press 'R' button to restart.", this.width * 0.5, this.height * 0.5 + 70);
+    this.context.restore();
   }
 
   checkCollision(a, b, distanceBuffer = 0) {
@@ -200,7 +262,18 @@ class Game {
         this.enemyTimer += Math.random() * 16;
       }
     }
-    window.requestAnimationFrame(this.animate.bind(this));
+
+    if (this.score >= this.winningScore) {
+      this.winMessage();
+      this.gameOver = true;
+    }
+
+    if (this.score <= this.loosingScore) {
+      this.looseMessage();
+      this.gameOver = true;
+    }
+
+    if (!this.gameOver) window.requestAnimationFrame(this.animate.bind(this));
   }
 
   init() {
