@@ -145,7 +145,6 @@ class Enemy {
   removeObject() {}
 
   reduceOpacity() {
-    console.log(this.opacity);
     this.opacity =
       this.opacity - this.opacityModifier < 0.1
         ? 0
