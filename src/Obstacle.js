@@ -1,3 +1,4 @@
+import { v4 as uuid } from "uuid";
 import { obstacle } from "./constants/names";
 
 class Obstacle {
@@ -5,6 +6,7 @@ class Obstacle {
     this.game = game;
 
     this.name = obstacle;
+    this.id = uuid();
 
     this.collisionX = Math.random() * this.game.width;
     this.collisionY = Math.random() * this.game.height;
@@ -64,6 +66,8 @@ class Obstacle {
     );
     this.drawHitbox();
   }
+
+  update() {}
 }
 
 export default Obstacle;
