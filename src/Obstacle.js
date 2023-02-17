@@ -8,11 +8,11 @@ class Obstacle {
     this.name = obstacle;
     this.id = uuid();
 
-    this.collisionX = Math.random() * this.game.width;
-    this.collisionY = Math.random() * this.game.height;
+    // collision properties
     this.collisionRadius = 50;
     this.collisionOpacity = 0.5;
 
+    // image properties
     this.image = document.getElementById("obstacles");
     this.spriteWidth = 250;
     this.spriteHeight = 250;
@@ -20,13 +20,24 @@ class Obstacle {
     this.spriteOffsetY = 0.85;
     this.width = this.spriteWidth;
     this.height = this.spriteHeight;
+
+    // position properties
+    this.collisionX;
+    this.collisionY;
+    this.initPosition();
     this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
 
+    // animation properties
     this.frameX = Math.floor(Math.random() * 4);
     this.frameY = Math.floor(Math.random() * 3);
 
     this.game.debug = this.game.debug;
+  }
+
+  initPosition() {
+    this.collisionX = Math.random() * this.game.width;
+    this.collisionY = Math.random() * this.game.height;
   }
 
   drawHitbox() {
@@ -67,7 +78,16 @@ class Obstacle {
     this.drawHitbox();
   }
 
-  update() {}
+  moveObject() {}
+
+  collision() {}
+
+  pushObject() {}
+
+  update() {
+    this.moveObject();
+    this.collision();
+  }
 }
 
 export default Obstacle;
