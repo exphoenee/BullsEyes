@@ -14,27 +14,28 @@ class Enemy {
     this.spriteHeight = 260;
     this.width = this.spriteWidth;
     this.height = this.spriteHeight;
-    this.spriteOffsetX = 0.5;
-    this.spriteOffsetY = 0.85;
+    this.spriteOffsetX = 0.4;
+    this.spriteOffsetY = 0.5;
 
     //  position properties
     this.collisionX;
     this.collisionY;
     this.initPosition();
-    this.collisionRadius = 30;
+    this.collisionRadius = 50;
     this.collisionOpacity = 0.5;
     this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
 
     // motion properties
-    this.sppedX = Math.random() * 3 + 0.5;
+    this.speedX = Math.random() * 3 + 0.5;
     this.speedY = 0;
     this.dx = 0;
     this.dy = 0;
     this.speedModifier = 1;
 
     // animation properties
-    this.spriteDirection = 0;
+    this.animationFrames = 0;
+    this.spriteDirection = Math.floor(Math.random() * 4);
     this.animationFrame = 0;
   }
 
@@ -46,7 +47,7 @@ class Enemy {
     this.collisionX = this.game.width + this.width;
     this.collisionY =
       this.game.topMargin +
-      Math.random() * (this.game.height - this.game.topMargin + this.height);
+      Math.random() * (this.game.height - this.height);
   }
 
   draw() {
@@ -84,12 +85,12 @@ class Enemy {
   }
 
   collision() {
-    [...this.game.obstacles].forEach((object) => {
+    [...this.game.obstacles, this.game.player].forEach((object) => {
       const collisionInfo = this.game.checkCollision(this, object) || {};
       const { collision } = collisionInfo;
 
       if (collision) {
-        object.areYou(obstacle) && this.pushObject(collisionInfo);
+        this.pushObject(collisionInfo);
       }
     });
   }
@@ -118,7 +119,7 @@ class Enemy {
   }
 
   objectMove() {
-    this.collisionX -= this.sppedX * this.speedModifier;
+    this.collisionX -= this.speedX * this.speedModifier;
     this.collisionY -= this.speedY * this.speedModifier;
 
     if (this.spriteX + this.width < 0) this.initPosition();
@@ -130,13 +131,14 @@ class Enemy {
     if (this.collisionY > this.game.height - this.collisionRadius)
       this.collisionY = this.game.height - this.collisionRadius;
 
-    // this.animationFrame = this.animationFrame < 58 ? this.animationFrame + 1 : 0;
+    this.animationFrame = this.animationFrame < this.animationFrames ? this.animationFrame + 1 : 0;
 
     this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
   }
 
   update() {
+    this.draw();
     this.objectMove();
     this.collision();
   }
