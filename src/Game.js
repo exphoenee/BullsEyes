@@ -31,6 +31,7 @@ class Game {
     this.context.fillStyle = "white";
     this.context.strokeStyle = "white";
     this.context.lineWidth = 3;
+    this.context.font = "40px Helvetica";
 
     // game object properties
     this.gameObjects = [];
@@ -46,14 +47,14 @@ class Game {
     this.obstacleAttempts = 5000;
 
     // egg properties
-    this.numberOfEggs = 10;
+    this.numberOfEggs = 15;
     this.eggs = [];
     this.minimumEggDistance = 70;
     this.eggTimer = 0;
     this.eggInterval = 1000;
 
     // enemy properties
-    this.numberOfEnemies = 6;
+    this.numberOfEnemies = 8;
     this.enemies = [];
     this.minimumEnemyDistance = 70;
     this.enemyTimer = 0;
@@ -62,7 +63,6 @@ class Game {
     // larva properties
     this.larvas = [];
     // hatching properties
-    this.hatchTimer = 0;
     this.hatchInterval = 5000;
 
     // mouse properties
@@ -107,6 +107,7 @@ class Game {
     ];
     this.gameObjects.sort((a, b) => a.collisionY - b.collisionY);
     this.gameObjects.forEach((object) => object.update());
+    this.context.fillText(`Score: ${this.score}`, 20, 50);
   }
 
   checkCollision(a, b, distanceBuffer = 0) {
