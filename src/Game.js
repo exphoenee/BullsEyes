@@ -115,8 +115,6 @@ class Game {
   }
 
   restart() {
-    console.log("restart");
-    console.log(this)
     this.gameOver = false;
     this.score = 0;
     this.obstacles = [];
@@ -160,7 +158,11 @@ class Game {
     this.context.textAlign = "center";
     this.context.fillText("You Won!", this.width * 0.5, this.height * 0.5);
     this.context.font = "40px Helvetica";
-    this.context.fillText("Press 'R' button to restart.", this.width * 0.5, this.height * 0.5 + 70);
+    this.context.fillText(
+      "Press 'R' button to restart.",
+      this.width * 0.5,
+      this.height * 0.5 + 70
+    );
     this.context.restore();
   }
 
@@ -173,7 +175,11 @@ class Game {
     this.context.textAlign = "center";
     this.context.fillText("Game Over!", this.width * 0.5, this.height * 0.5);
     this.context.font = "40px Helvetica";
-    this.context.fillText("Press 'R' button to restart.", this.width * 0.5, this.height * 0.5 + 70);
+    this.context.fillText(
+      "Press 'R' button to restart.",
+      this.width * 0.5,
+      this.height * 0.5 + 70
+    );
     this.context.restore();
   }
 
