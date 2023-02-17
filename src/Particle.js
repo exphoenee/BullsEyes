@@ -46,9 +46,15 @@ class Particle {
     this.game.context.restore();
   }
 
-  removeObject() {
+  reduceOpacity() {
     this.opacity -= this.opacityModifier;
-    this.color = `${this.color.split(", ").slice(0, -1).join(", ")}, ${this.opacity})`;
+    this.color = `${this.color.split(", ").slice(0, -1).join(", ")}, ${
+      this.opacity < 0 ? 0 : this.opacity
+    })`;
+  }
+
+  removeObject() {
+    this.reduceOpacity();
     if (this.opacity <= 0) {
       this.game.particles = this.game.particles.filter(
         (particle) => particle.id !== this.id
