@@ -1,6 +1,7 @@
 import Player from "./Player.js";
 import Obstacle from "./Obstacle.js";
 import Egg from "./Egg.js";
+import Enemy from "./Enemy.js";
 
 class Game {
   constructor() {
@@ -8,15 +9,20 @@ class Game {
       return Game.instance;
     }
     Game.instance = this;
+
+    // application mode
     this.debug = true;
 
+    // rendering properties
     this.fps = 60;
     this.lastRender = 0;
 
+    // game area properties
     this.width = 1280;
     this.height = 720;
     this.topMargin = 260;
 
+    // canvas properties
     this.canvas = document.getElementById("canvas1");
     this.canvas.width = this.width;
     this.canvas.height = this.height;
@@ -26,19 +32,34 @@ class Game {
     this.context.strokeStyle = "white";
     this.context.lineWidth = 3;
 
-    this.player = new Player(this);
-    this.numberOfObstacles = 10;
-    this.obstacles = [];
-    this.minimumObstacleDistance = 70;
+    // game object properties
+    this.gameObjects = [];
 
+    // player properties
+    this.player = new Player(this);
     this.score = 0;
 
-    this.numberOfEggs = 10;
+    // obstacle properties
+    this.numberOfObstacles = 10;
+    this.obstacles = [];
+    this.minimumObstacleDistance = 80;
+    this.obstacleAttempts = 5000;
+
+    // egg properties
+    this.numberOfEggs = 20;
     this.eggs = [];
     this.minimumEggDistance = 70;
     this.eggTimer = 0;
-    this.eggInterval = 750;
+    this.eggInterval = 1000;
 
+    // egg properties
+    this.numberOfEnemies = 5;
+    this.enemies = [];
+    this.minimumEnemyDistance = 70;
+    this.enemyTimer = 0;
+    this.enemyInterval = 1000;
+
+    // mouse properties
     this.mouse = {
       x: this.width * 0.5,
       y: this.height * 0.5,
@@ -62,6 +83,8 @@ class Game {
         this.mouse.y = e.offsetY;
       }
     });
+
+    // key properties
     window.addEventListener("keydown", (e) => {
       if (e.key == "d") this.debug = !this.debug;
     });
@@ -69,11 +92,17 @@ class Game {
 
   render() {
     this.context.clearRect(0, 0, this.width, this.height);
-    this.obstacles.forEach((obstacle) => obstacle.draw());
-    this.eggs.forEach((egg) => egg.draw());
-    this.eggs.forEach((egg) => egg.update());
-    this.player.draw();
-    this.player.update();
+    this.gameObjects = [
+      ...this.obstacles,
+      this.player,
+      ...this.eggs,
+      ...this.enemies,
+    ];
+    this.gameObjects.sort((a, b) => a.collisionY - b.collisionY);
+    this.gameObjects.forEach((object) => {
+      object.draw();
+      object.update();
+    });
   }
 
   checkCollision(a, b, distanceBuffer = 0) {
@@ -95,12 +124,16 @@ class Game {
 
   generateObstacles() {
     let attempts = 0;
-    while (this.obstacles.length < this.numberOfObstacles && attempts < 500) {
+    while (
+      this.obstacles.length < this.numberOfObstacles &&
+      attempts < this.obstacleAttempts
+    ) {
       let testObstacle = new Obstacle(this);
 
       let collision = false;
 
-      [...this.obstacles, this.player].forEach((obstacle) => {
+      // earier I added the player to the obstacles array, but that was a bad idea because the player takes space form obstacles and less obstacles can be generated
+      [...this.obstacles].forEach((obstacle) => {
         const a = testObstacle;
         const b = obstacle;
         const distanceBuffer = 150;
@@ -124,6 +157,10 @@ class Game {
     }
   }
 
+  addEnemy() {
+    this.enemies.push(new Enemy(this));
+  }
+
   addEgg() {
     this.eggs.push(new Egg(this));
   }
@@ -141,6 +178,17 @@ class Game {
         this.eggTimer = 0;
       } else {
         this.eggTimer += Math.random() * 16;
+      }
+
+      if (
+        this.enemyTimer > this.enemyInterval &&
+        this.enemies.length < this.numberOfEnemies
+      ) {
+        this.addEnemy();
+        console.log(this.enemies);
+        this.enemyTimer = 0;
+      } else {
+        this.enemyTimer += Math.random() * 16;
       }
     }
     window.requestAnimationFrame(this.animate.bind(this));
