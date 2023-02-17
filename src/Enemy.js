@@ -1,5 +1,5 @@
 import { v4 as uuid } from "uuid";
-import { enemy } from "./constants/names";
+import { enemy, obstacle, egg, player } from "./constants/names";
 
 class Enemy {
   constructor(game) {
@@ -8,12 +8,7 @@ class Enemy {
     this.name = enemy;
     this.id = uuid();
 
-    this.sppedX = Math.random() * 3 + 0.5;
-    this.speedY = 0;
-    this.dx = 0;
-    this.dy = 0;
-    this.speedModifier = 5;
-
+    // image properties
     this.image = document.getElementById("toad");
     this.spriteWidth = 140;
     this.spriteHeight = 260;
@@ -22,21 +17,36 @@ class Enemy {
     this.spriteOffsetX = 0.5;
     this.spriteOffsetY = 0.85;
 
-    this.collisionX = this.game.width + this.width;
-    this.collisionY =
-      this.game.topMargin +
-      Math.random() * (this.game.height - this.game.topMargin + this.height);
+    //  position properties
+    this.collisionX;
+    this.collisionY;
+    this.initPosition();
     this.collisionRadius = 30;
     this.collisionOpacity = 0.5;
-
     this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
+
+    // motion properties
+    this.sppedX = Math.random() * 3 + 0.5;
+    this.speedY = 0;
+    this.dx = 0;
+    this.dy = 0;
+    this.speedModifier = 1;
+
+    // animation properties
     this.spriteDirection = 0;
     this.animationFrame = 0;
   }
 
   areYou(name) {
     return this.name === name;
+  }
+
+  initPosition() {
+    this.collisionX = this.game.width + this.width;
+    this.collisionY =
+      this.game.topMargin +
+      Math.random() * (this.game.height - this.game.topMargin + this.height);
   }
 
   draw() {
@@ -73,16 +83,20 @@ class Enemy {
     }
   }
 
-  obstacleCollision() {
-    this.game.obstacles.forEach((obstacle) => {
-      const { collision, distance, sumOfRadii, dx, dy } =
-        this.game.checkCollision(this, obstacle) || {};
+  collision() {
+    [...this.game.obstacles].forEach((object) => {
+      const collisionInfo = this.game.checkCollision(this, object) || {};
+      const { collision } = collisionInfo;
 
       if (collision) {
-        this.collisionX -= (dx / distance) * (sumOfRadii - distance);
-        this.collisionY -= (dy / distance) * (sumOfRadii - distance);
+        object.areYou(obstacle) && this.pushObject(collisionInfo);
       }
     });
+  }
+
+  pushObject({ dx, dy, distance, sumOfRadii }) {
+    this.collisionX -= (dx / distance) * (sumOfRadii - distance);
+    this.collisionY -= (dy / distance) * (sumOfRadii - distance);
   }
 
   objectDirection() {
@@ -107,12 +121,7 @@ class Enemy {
     this.collisionX -= this.sppedX * this.speedModifier;
     this.collisionY -= this.speedY * this.speedModifier;
 
-    if (this.spriteX + this.width < 0) {
-      this.collisionX = this.game.width + this.width;
-      this.collisionY =
-        this.game.topMargin +
-        Math.random() * (this.game.height - this.game.topMargin + this.height);
-    }
+    if (this.spriteX + this.width < 0) this.initPosition();
 
     if (this.collisionX > this.game.width - this.collisionRadius)
       this.collisionX = this.game.width - this.collisionRadius;
@@ -129,7 +138,7 @@ class Enemy {
 
   update() {
     this.objectMove();
-    this.obstacleCollision();
+    this.collision();
   }
 }
 
