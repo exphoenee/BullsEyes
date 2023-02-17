@@ -98,17 +98,20 @@ class Larva {
   }
 
   collision() {
-    [this.game.player, ...this.game.obstacles, ...this.game.enemies].forEach(
-      (object) => {
-        const collisionInfo = this.game.checkCollision(this, object) || {};
-        const { collision } = collisionInfo;
+    [
+      this.game.player,
+      ...this.game.obstacles,
+      ...this.game.enemies,
+      ...this.game.eggs,
+    ].forEach((object) => {
+      const collisionInfo = this.game.checkCollision(this, object) || {};
+      const { collision } = collisionInfo;
 
-        if (collision) {
-          this.pushObject(collisionInfo);
-          if (object.areYou(enemy)) this.eaten();
-        }
+      if (collision) {
+        this.pushObject(collisionInfo);
+        if (object.areYou(enemy)) this.eaten();
       }
-    );
+    });
   }
 
   pushObject({ dx, dy, distance, sumOfRadii }) {
