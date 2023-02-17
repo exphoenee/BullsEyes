@@ -1,5 +1,6 @@
 import { v4 as uuid } from "uuid";
 import { enemy, obstacle, egg, player } from "./constants/names";
+import Sparks from "./Sparks";
 
 class Enemy {
   constructor(game) {
@@ -37,6 +38,15 @@ class Enemy {
     this.animationFrames = 0;
     this.spriteDirection = Math.floor(Math.random() * 4);
     this.animationFrame = 0;
+
+    // life time properties
+    this.lifeTime = 0;
+    this.lifeTimeLimit = 20000;
+
+    this.numberOfSparks = 15;
+    this.colorOfSparks = "rgba(0, 255, 0, 0.5)";
+    this.opacity = 1;
+    this.opacityModifier = 0.05;
   }
 
   areYou(name) {
@@ -46,11 +56,12 @@ class Enemy {
   initPosition() {
     this.collisionX = this.game.width + this.width;
     this.collisionY =
-      this.game.topMargin +
-      Math.random() * (this.game.height - this.height);
+      this.game.topMargin + Math.random() * (this.game.height - this.height);
   }
 
   draw() {
+    this.game.context.save();
+    this.game.context.globalAlpha = this.opacity;
     this.game.context.drawImage(
       this.image,
       this.animationFrame * this.spriteWidth,
@@ -62,6 +73,7 @@ class Enemy {
       this.width,
       this.height
     );
+    this.game.context.restore();
     this.drwaHitbox();
   }
 
@@ -118,6 +130,30 @@ class Enemy {
     this.spriteDirection = Math.floor(angle / angleStep);
   }
 
+  addSpark() {
+    const position = {
+      x: this.collisionX,
+      y: this.collisionY,
+    };
+    for (let i = 0; i < this.numberOfSparks; i++) {
+      this.game.particles.push(
+        new Sparks(this.game, position, this.colorOfSparks)
+      );
+    }
+  }
+
+  removeObject() {}
+
+  kill() {
+    this.opacity -= this.opacityModifier;
+    console.log(this.opacity);
+    if (this.opacity <= 0) {
+      this.addSpark();
+      this.initPosition();
+      this.lifeTime = 0;
+    }
+  }
+
   objectMove() {
     this.collisionX -= this.speedX * this.speedModifier;
     this.collisionY -= this.speedY * this.speedModifier;
@@ -131,10 +167,14 @@ class Enemy {
     if (this.collisionY > this.game.height - this.collisionRadius)
       this.collisionY = this.game.height - this.collisionRadius;
 
-    this.animationFrame = this.animationFrame < this.animationFrames ? this.animationFrame + 1 : 0;
+    this.animationFrame =
+      this.animationFrame < this.animationFrames ? this.animationFrame + 1 : 0;
 
     this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
+
+    this.lifeTime += 16;
+    if (this.lifeTime > this.lifeTimeLimit) this.kill();
   }
 
   update() {
