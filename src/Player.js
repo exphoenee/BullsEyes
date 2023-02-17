@@ -1,3 +1,4 @@
+import { v4 as uuid } from "uuid";
 import { player } from "./constants/names";
 
 class Player {
@@ -10,17 +11,18 @@ class Player {
     this.game = game;
 
     this.name = player;
-
-    this.collisionX = this.game.width * 0.5;
-    this.collisionY = this.game.height * 0.5;
-    this.collisionRadius = 50;
-    this.collisionOpacity = 0.5;
+    this.id = uuid();
 
     this.sppedX = 0;
     this.speedY = 0;
     this.dx = 0;
     this.dy = 0;
     this.speedModifier = 5;
+
+    this.collisionX = this.game.width * 0.5;
+    this.collisionY = this.game.height * 0.5;
+    this.collisionRadius = 50;
+    this.collisionOpacity = 0.5;
 
     this.image = document.getElementById("bull");
     this.spriteWidth = 255;
@@ -89,7 +91,7 @@ class Player {
     });
   }
 
-  playerDirection() {
+  objectDirection() {
     const angleStep = 360 / 8;
 
     const angle = Math.floor(
@@ -107,7 +109,7 @@ class Player {
     this.spriteDirection = Math.floor(angle / angleStep);
   }
 
-  playerMove() {
+  objectMove() {
     this.dx = this.game.mouse.x - this.collisionX;
     this.dy = this.game.mouse.y - this.collisionY;
     const distance = Math.hypot(this.dy, this.dx);
@@ -140,9 +142,9 @@ class Player {
   }
 
   update() {
-    this.playerMove();
+    this.objectMove();
     this.obstacleCollision();
-    this.playerDirection();
+    this.objectDirection();
   }
 }
 
