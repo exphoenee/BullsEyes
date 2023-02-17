@@ -51,7 +51,7 @@ class Larva {
     this.colorOfSparks = "rgba(255, 255, 0, 0.5)";
 
     this.opacity = 1;
-    this.opacityModifier = 0.05;
+    this.opacityModifier = 0.1;
   }
 
   areYou(name) {
@@ -159,13 +159,18 @@ class Larva {
   }
 
   removeObject() {
-    this.game.larvas = this.game.larvas.filter(
-      (larva) => larva.id !== this.id
-    );
+    this.game.larvas = this.game.larvas.filter((larva) => larva.id !== this.id);
+  }
+
+  reduceOpacity() {
+    this.opacity =
+      this.opacity - this.opacityModifier < 0.1
+        ? 0
+        : this.opacity - this.opacityModifier;
   }
 
   eaten() {
-    this.opacity -= this.opacityModifier;
+    this.reduceOpacity();
     if (this.opacity <= 0) {
       this.game.score -= 1;
       this.removeObject();
@@ -174,7 +179,7 @@ class Larva {
   }
 
   survived() {
-    this.opacity -= this.opacityModifier;
+    this.reduceOpacity();
     if (this.opacity <= 0) {
       this.game.score += 1;
       this.removeObject();
