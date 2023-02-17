@@ -16,6 +16,7 @@ class Game {
     // rendering properties
     this.fps = 60;
     this.lastRender = 0;
+    this.deltaTime = 0;
 
     // game area properties
     this.width = 1280;
@@ -54,7 +55,7 @@ class Game {
     this.eggInterval = 1000;
 
     // enemy properties
-    this.numberOfEnemies = 8;
+    this.numberOfEnemies = 1;
     this.enemies = [];
     this.minimumEnemyDistance = 70;
     this.enemyTimer = 0;
@@ -175,7 +176,7 @@ class Game {
   }
 
   animate(timeStamp) {
-    if (timeStamp - this.lastRender > 1000 / 60) {
+    if (timeStamp - this.lastRender > 1000 / this.fps) {
       this.render();
       this.lastRender = timeStamp;
 
