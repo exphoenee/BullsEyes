@@ -1,4 +1,7 @@
 import { v4 as uuid } from "uuid";
+
+import Larva from "./Larva.js";
+
 import { egg, obstacle, enemy, player } from "./constants/names.js";
 
 class Egg {
@@ -82,7 +85,7 @@ class Egg {
       this.game.player,
       ...this.game.obstacles,
       ...this.game.enemies,
-      // ...this.game.eggs.filter((egg) => egg.id !== this.id),
+      ...this.game.eggs.filter((egg) => egg.id !== this.id),
     ];
     collisionObject.forEach((object) => {
       const collisionInfo = this.game.checkCollision(this, object) || {};
@@ -90,11 +93,22 @@ class Egg {
 
       if (collision) {
         this.pushObject(collisionInfo);
-        // object.areYou(obstacle) && this.pushObject(collisionInfo);
-        // object.areYou(player) && this.pushObject(collisionInfo);
-        // object.areYou(enemy) && object.pushObject(collisionInfo);
       }
     });
+  }
+
+  hatching() {
+    this.game.hatchTimer += 16 + 16 * Math.random();
+    if (this.game.hatchTimer >= this.game.hatchInterval) {
+      console.log("hatched");
+      this.game.eggs = this.game.eggs.filter((egg) => egg.id !== this.id);
+      const position = {
+        x: this.collisionX,
+        y: this.collisionY,
+      };
+      this.game.larvas.push(new Larva(this.game, position));
+      console.log(this.game.larvas);
+    }
   }
 
   objectMove() {
@@ -102,14 +116,16 @@ class Egg {
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
   }
 
-  update() {
-    this.objectMove();
-    this.collision();
-  }
-
   pushObject({ dx, dy, distance, sumOfRadii }) {
     this.collisionX -= (dx / distance) * (sumOfRadii - distance);
     this.collisionY -= (dy / distance) * (sumOfRadii - distance);
+  }
+
+  update() {
+    this.draw();
+    this.hatching();
+    this.objectMove();
+    this.collision();
   }
 }
 
