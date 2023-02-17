@@ -9,7 +9,7 @@ class Obstacle {
     this.id = uuid();
 
     // collision properties
-    this.collisionRadius = 50;
+    this.collisionRadius = 40;
     this.collisionOpacity = 0.5;
 
     // image properties
@@ -85,6 +85,7 @@ class Obstacle {
   pushObject() {}
 
   update() {
+    this.draw();
     this.moveObject();
     this.collision();
   }
