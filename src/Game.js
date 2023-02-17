@@ -46,14 +46,14 @@ class Game {
     this.obstacleAttempts = 5000;
 
     // egg properties
-    this.numberOfEggs = 20;
+    this.numberOfEggs = 10;
     this.eggs = [];
     this.minimumEggDistance = 70;
     this.eggTimer = 0;
     this.eggInterval = 1000;
 
     // egg properties
-    this.numberOfEnemies = 5;
+    this.numberOfEnemies = 6;
     this.enemies = [];
     this.minimumEnemyDistance = 70;
     this.enemyTimer = 0;
