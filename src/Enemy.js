@@ -46,7 +46,7 @@ class Enemy {
     this.numberOfSparks = 15;
     this.colorOfSparks = "rgba(0, 255, 0, 0.5)";
     this.opacity = 1;
-    this.opacityModifier = 0.05;
+    this.opacityModifier = 0.1;
   }
 
   areYou(name) {
@@ -144,13 +144,25 @@ class Enemy {
 
   removeObject() {}
 
-  kill() {
-    this.opacity -= this.opacityModifier;
+  reduceOpacity() {
     console.log(this.opacity);
+    this.opacity =
+      this.opacity - this.opacityModifier < 0.1
+        ? 0
+        : this.opacity - this.opacityModifier;
+  }
+
+  init() {
+    this.initPosition();
+    this.opacity = 1;
+    this.lifeTime = 0;
+  }
+
+  kill() {
+    this.reduceOpacity();
     if (this.opacity <= 0) {
       this.addSpark();
-      this.initPosition();
-      this.lifeTime = 0;
+      this.init();
     }
   }
 
@@ -158,7 +170,7 @@ class Enemy {
     this.collisionX -= this.speedX * this.speedModifier;
     this.collisionY -= this.speedY * this.speedModifier;
 
-    if (this.spriteX + this.width < 0) this.initPosition();
+    if (this.spriteX + this.width < 0) this.init();
 
     if (this.collisionX > this.game.width - this.collisionRadius)
       this.collisionX = this.game.width - this.collisionRadius;
