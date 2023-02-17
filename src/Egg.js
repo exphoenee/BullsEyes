@@ -105,7 +105,6 @@ class Egg {
   hatching() {
     this.hatchTimer += 16 + 16 * Math.random();
     if (this.hatchTimer >= this.game.hatchInterval) {
-      console.log("hatched");
       this.game.eggs = this.game.eggs.filter((egg) => egg.id !== this.id);
       const position = {
         x: this.collisionX,
