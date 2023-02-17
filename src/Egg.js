@@ -77,7 +77,14 @@ class Egg {
       this.height
     );
     const displayHatchTimer = Math.floor((this.game.hatchInterval-this.hatchTimer) / 1000) + 1;
-    this.game.context.fillText(displayHatchTimer, this.spriteX + this.width*0.4, this.spriteY + this.height*0.3);
+    this.game.context.save();
+    this.game.context.globalAlpha = 0.5;
+    this.game.context.fillText(
+      displayHatchTimer,
+      this.spriteX + this.width * 0.4,
+      this.spriteY - this.height * 0.1
+    );
+    this.game.context.restore();
     this.drawHitbox();
   }
 
