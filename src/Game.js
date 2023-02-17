@@ -11,7 +11,7 @@ class Game {
     Game.instance = this;
 
     // application mode
-    this.debug = true;
+    this.debug = false;
 
     // rendering properties
     this.fps = 60;
@@ -65,6 +65,9 @@ class Game {
     // hatching properties
     this.hatchInterval = 5000;
 
+    // particle properties
+    this.particles = [];
+
     // mouse properties
     this.mouse = {
       x: this.width * 0.5,
@@ -104,6 +107,7 @@ class Game {
       ...this.eggs,
       ...this.enemies,
       ...this.larvas,
+      ...this.particles,
     ];
     this.gameObjects.sort((a, b) => a.collisionY - b.collisionY);
     this.gameObjects.forEach((object) => object.update());
