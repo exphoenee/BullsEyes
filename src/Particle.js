@@ -23,6 +23,8 @@ class Particle {
     this.particleTime = 1500;
 
     this.color = color;
+    this.opacity = this.color.split(", ").slice(-1)[0].slice(0, -1);
+    this.opacityModifier = 0.05;
   }
 
   draw() {
@@ -45,9 +47,13 @@ class Particle {
   }
 
   removeObject() {
-    this.game.particles = this.game.particles.filter(
-      (particle) => particle.id !== this.id
-    );
+    this.opacity -= this.opacityModifier;
+    this.color = `${this.color.split(", ").slice(0, -1).join(", ")}, ${this.opacity})`;
+    if (this.opacity <= 0) {
+      this.game.particles = this.game.particles.filter(
+        (particle) => particle.id !== this.id
+      );
+    }
   }
 
   update() {
