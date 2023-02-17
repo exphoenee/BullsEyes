@@ -21,7 +21,7 @@ class Player {
     this.height = this.spriteHeight;
 
     // motion properties
-    this.sppedX = 0;
+    this.speedX = 0;
     this.speedY = 0;
     this.dx = 0;
     this.dy = 0;
@@ -34,11 +34,13 @@ class Player {
     this.collisionRadius = 50;
     this.collisionOpacity = 0.5;
     this.spriteOffsetX = 0.5;
-    this.spriteOffsetY = 0.85;
+    this.spriteOffsetY = 0.65;
     this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
 
     // animation properties
+    this.animationFrames = 58;
+    this.ainmationDirection = 8;
     this.spriteDirection = 0;
     this.animationFrame = 0;
   }
@@ -91,11 +93,13 @@ class Player {
   }
 
   collision() {
-    [...this.game.obstacles, ...this.game.enemies].forEach((object) => {
+    [...this.game.obstacles].forEach((object) => {
       const collisionInfo = this.game.checkCollision(this, object) || {};
       const { collision } = collisionInfo;
 
-      if (collision) this.pushObject(collisionInfo);
+      if (collision) {
+        this.pushObject(collisionInfo);
+      }
     });
   }
 
@@ -105,7 +109,7 @@ class Player {
   }
 
   objectDirection() {
-    const angleStep = 360 / 8;
+    const angleStep = 360 / this.ainmationDirection;
 
     const angle = Math.floor(
       ((Math.atan2(
@@ -128,14 +132,14 @@ class Player {
     const distance = Math.hypot(this.dy, this.dx);
 
     if (distance <= this.speedModifier) {
-      this.sppedX = 0;
+      this.speedX = 0;
       this.speedY = 0;
     } else {
-      this.sppedX = this.dx / distance || 0;
+      this.speedX = this.dx / distance || 0;
       this.speedY = this.dy / distance || 0;
     }
 
-    this.collisionX += this.sppedX * this.speedModifier;
+    this.collisionX += this.speedX * this.speedModifier;
     this.collisionY += this.speedY * this.speedModifier;
 
     if (this.collisionX < this.collisionRadius)
@@ -148,13 +152,14 @@ class Player {
       this.collisionY = this.game.height - this.collisionRadius;
 
     this.animationFrame =
-      this.animationFrame < 58 ? this.animationFrame + 1 : 0;
+      this.animationFrame < this.animationFrames ? this.animationFrame + 1 : 0;
 
     this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
   }
 
   update() {
+    this.draw();
     this.objectMove();
     this.collision();
     this.objectDirection();
