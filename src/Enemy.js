@@ -1,7 +1,4 @@
-import { v4 as uuid } from "uuid";
-
 import GameObject from "./GameObject";
-import Sparks from "./Sparks";
 
 import { enemy, player, obstacle, egg } from "./constants/names";
 
