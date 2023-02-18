@@ -2,7 +2,16 @@ import { v4 as uuid } from "uuid";
 
 import GameObject from "./GameObject";
 
-import { player } from "./constants/names";
+import {
+  player,
+  obstacle,
+  enemy,
+  egg,
+  larva,
+  particle,
+  spark,
+  firefly,
+} from "./constants/names";
 
 class Player extends GameObject {
   constructor(game) {
@@ -21,6 +30,7 @@ class Player extends GameObject {
         animationDirection: 8,
       },
       collisionProperties: {
+        gameObjectNames: [obstacle],
         collisionRadius: 50,
         collisionOpacity: 0.5,
       },
