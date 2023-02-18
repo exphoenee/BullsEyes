@@ -1,43 +1,30 @@
 import { v4 as uuid } from "uuid";
-import { enemy, obstacle, egg, player } from "./constants/names";
+
+import GameObject from "./GameObject";
 import Sparks from "./Sparks";
 
-class Enemy {
+import { enemy } from "./constants/names";
+
+class Enemy extends GameObject {
   constructor(game) {
-    this.game = game;
-
-    this.name = enemy;
-    this.id = uuid();
-
-    // image properties
-    this.image = document.getElementById("toad");
-    this.spriteWidth = 140;
-    this.spriteHeight = 260;
-    this.width = this.spriteWidth;
-    this.height = this.spriteHeight;
-    this.spriteOffsetX = 0.4;
-    this.spriteOffsetY = 0.5;
-
-    //  position properties
-    this.collisionX;
-    this.collisionY;
-    this.initPosition();
-    this.collisionRadius = 50;
-    this.collisionOpacity = 0.5;
-    this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
-    this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
-
-    // motion properties
-    this.speedX = Math.random() * 3 + 0.5;
-    this.speedY = 0;
-    this.dx = 0;
-    this.dy = 0;
-    this.speedModifier = 1;
-
-    // animation properties
-    this.animationFrames = 0;
-    this.spriteDirection = Math.floor(Math.random() * 4);
-    this.animationFrame = 0;
+    super(game, {
+      gameObjectName: enemy,
+      imageSettings: {
+        imageId: "toad",
+        spriteWidth: 140,
+        spriteHeight: 260,
+        spriteOffsetX: 0.4,
+        spriteOffsetY: 0.5,
+        variant: Math.floor(Math.random() * 4),
+      },
+      collisionProperties: {
+        collisionRadius: 50,
+      },
+      motionSettings: {
+        speedModifier: 1,
+        speedX: Math.random() * 3 + 0.5,
+      },
+    });
 
     // life time properties
     this.lifeTime = 0;
