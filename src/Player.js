@@ -45,6 +45,13 @@ class Player extends GameObject {
     this.collisionY = this.game.height * 0.5;
   }
 
+  extraHitboxDraw() {
+    this.game.context.beginPath();
+    this.game.context.moveTo(this.collisionX, this.collisionY);
+    this.game.context.lineTo(this.game.mouse.x, this.game.mouse.y);
+    this.game.context.stroke();
+  }
+
   objectMove() {
     this.dx = this.game.mouse.x - this.collisionX;
     this.dy = this.game.mouse.y - this.collisionY;
