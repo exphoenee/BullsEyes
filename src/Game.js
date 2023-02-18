@@ -237,11 +237,11 @@ class Game {
 
   addEnemy() {
     this.enemies.push(new Enemy(this));
-    console.log(this.enemies);
   }
 
   addEgg() {
     this.eggs.push(new Egg(this));
+    console.log(this.eggs);
   }
 
   animate(timeStamp) {
