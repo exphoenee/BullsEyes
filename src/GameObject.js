@@ -31,6 +31,7 @@ class GameObject {
         collisionOpacity: 0.5,
         collisionX,
         collisionY,
+        margin: 0,
       },
       motionSettings = { speedX: 0, speedY: 0, speedModifier: 1 },
     }
@@ -83,6 +84,11 @@ class GameObject {
     }
 
     if (collisionProperties) {
+      // set the collision properties
+      this.collisionObjectNames = collisionProperties.gameObjectNames;
+      this.collisionRadius = collisionProperties.collisionRadius;
+      this.collisionOpacity = collisionProperties.collisionOpacity;
+      this.margin = collisionProperties.margin;
       // set the position properties
       if (collisionProperties.collisionX && collisionProperties.collisionY) {
         this.collisionX = this.collisionProperties.collisionX;
@@ -92,11 +98,6 @@ class GameObject {
         this.collisionY;
         this.initPosition();
       }
-
-      // set the collision properties
-      this.collisionObjectNames = collisionProperties.gameObjectNames;
-      this.collisionRadius = collisionProperties.collisionRadius;
-      this.collisionOpacity = motionSettings.collisionOpacity;
     }
 
     // set the animation properties
@@ -152,10 +153,7 @@ class GameObject {
       this.game.context.fill();
       this.game.context.restore();
       this.game.context.stroke();
-      this.game.context.beginPath();
-      this.game.context.moveTo(this.collisionX, this.collisionY);
-      this.game.context.lineTo(this.game.mouse.x, this.game.mouse.y);
-      this.game.context.stroke();
+      this.extraHitboxDraw && this.extraHitboxDraw();
     }
   }
 
