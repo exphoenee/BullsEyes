@@ -1,3 +1,6 @@
+import Sparks from "./Sparks";
+import Firefly from "./Firefly";
+
 import { v4 as uuid } from "uuid";
 
 import { pluralNames } from "./constants/names";
@@ -32,13 +35,6 @@ class GameObject {
       motionSettings = { speedX: 0, speedY: 0, speedModifier: 1 },
     }
   ) {
-    console.log("singleTone:", isSingleton);
-    console.log("gameObjectName:", gameObjectName);
-    console.log("imageSettings:", imageSettings);
-    console.log("animationSettings:", animationSettings);
-    console.log("collisionProperties:", collisionProperties);
-    console.log("motionSettings:", motionSettings);
-
     if (isSingleton) {
       if (typeof GameObject.instance === "object") {
         return GameObject.instance;
@@ -79,8 +75,8 @@ class GameObject {
 
     // set the motion properties
     if (motionSettings) {
-      this.speedX = motionSettings.speedX;
-      this.speedY = motionSettings.speedY;
+      this.speedX = motionSettings.speedX || 0;
+      this.speedY = motionSettings.speedY || 0;
       this.dx;
       this.dy;
       this.speedModifier = motionSettings.speedModifier;
@@ -162,8 +158,9 @@ class GameObject {
       this.game.context.stroke();
     }
   }
+
   collision() {
-    if (this.collisionObjectNames.length === 0) {
+    if (this.collisionObjectNames && this.collisionObjectNames.length > 0) {
       this.collisionObjectNames
         .map((gameObjectName) => {
           const pluralObjectName =
@@ -214,6 +211,33 @@ class GameObject {
   updateSpritePosition() {
     this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
+  }
+
+  reduceOpacity() {
+    this.opacity =
+      this.opacity - this.opacityModifier < 0.1
+        ? 0
+        : this.opacity - this.opacityModifier;
+  }
+
+  kill() {
+    this.reduceOpacity();
+    if (this.opacity <= 0) {
+      this.addSpark();
+      this.init();
+    }
+  }
+
+  addSpark() {
+    const position = {
+      x: this.collisionX,
+      y: this.collisionY,
+    };
+    for (let i = 0; i < this.numberOfSparks; i++) {
+      this.game.particles.push(
+        new Sparks(this.game, position, this.colorOfSparks)
+      );
+    }
   }
 
   update() {
