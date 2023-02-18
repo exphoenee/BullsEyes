@@ -27,7 +27,6 @@ class Egg extends GameObject {
 
     // this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     // this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
-    console.log(this.collisionX, this.collisionY);
     // hatching properties
     this.hatchTimer = 0;
   }
