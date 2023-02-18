@@ -36,7 +36,6 @@ class GameObject {
       motionSettings = { speedX: 0, speedY: 0, speedModifier: 1 },
     }
   ) {
-    console.table({name: this.name, ...collisionProperties})
     if (isSingleton) {
       if (typeof GameObject.instance === "object") {
         return GameObject.instance;
