@@ -1,5 +1,3 @@
-import { v4 as uuid } from "uuid";
-
 import GameObject from "./GameObject";
 
 import { enemy, obstacle, egg, player, larva } from "./constants/names";
@@ -27,12 +25,6 @@ class Larva extends GameObject {
         speedX: 0,
         speedY: Math.random() * 3 + 0.5,
       },
-    });
-
-    console.table({
-      name: this.name,
-      collsionX: this.collisionX,
-      collisionY: this.collisionY,
     });
 
     // particle effect properties
