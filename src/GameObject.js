@@ -16,17 +16,15 @@ class GameObject {
         spriteOffsetY,
       },
       animationSettings = {
-        animationFrames: 0,
-        animationDirection: 0,
-        spriteDirection: 0,
-        animationFrame: 0,
+        animationFrames,
+        animationDirection,
+        spriteDirection,
+        animationFrame,
       },
       collisionProperties = {
         gameObjectNames,
         collisionRadius,
-        collisionOpacity: 0.5,
-      },
-      positionProperties = {
+        collisionOpacity,
         collisionX,
         collisionY,
       },
@@ -66,23 +64,25 @@ class GameObject {
     this.speedModifier = motionSettings.speedModifier;
 
     // set the position properties
-    if (positionProperties.collisionX && positionProperties.collisionY) {
-      this.collisionX = positionProperties.collisionX;
-      this.collisionY = positionProperties.collisionY;
+    if (collisionProperties.collisionX && collisionProperties.collisionY) {
+      this.collisionX = this.collisionProperties.collisionX;
+      this.collisionY = this.collisionProperties.collisionY;
     } else {
+      this.collisionX;
+      this.collisionY;
       this.initPosition();
     }
 
     // set the collision properties
-    this.gameObjects = collisionProperties.gameObjects;
+    this.collisionObjectNames = collisionProperties.gameObjectNames || [];
     this.collisionRadius = collisionProperties.collisionRadius;
-    this.collisionOpacity = motionSettings.collisionOpacity;
+    this.collisionOpacity = motionSettings.collisionOpacity || 0.5;
 
     // set the animation properties
-    this.animationFrames = animationSettings.animationFrames;
-    this.animationDirection = animationSettings.animationDirection;
-    this.spriteDirection = animationSettings.animationDirection;
-    this.animationFrame = animationSettings.animationFrame;
+    this.animationFrames = animationSettings.animationFrames || 0;
+    this.animationDirection = animationSettings.animationDirection || 0;
+    this.spriteDirection = animationSettings.animationDirection || 0;
+    this.animationFrame = animationSettings.animationFrame || 0;
 
     // set the sprite position
     this.updateSpritePosition();
@@ -108,7 +108,7 @@ class GameObject {
       this.width,
       this.height
     );
-    this.drwaHitbox();
+    this.drawHitbox();
   }
 
   drawHitbox() {
@@ -134,20 +134,23 @@ class GameObject {
     }
   }
   collision() {
-    this.collisionProperties.gameObjectNames
-      .maps((gameObjectName) => {
-        const pluralObjectName = pluralNames[gameObjectName] || gameObjectName;
-        return this.game[pluralObjectName];
-      })
-      .flat()
-      .forEach((object) => {
-        const collisionInfo = this.game.checkCollision(this, object) || {};
-        const { collision } = collisionInfo;
+    if (this.collisionObjectNames.length === 0) {
+      this.collisionObjectNames
+        .map((gameObjectName) => {
+          const pluralObjectName =
+            pluralNames[gameObjectName] || gameObjectName;
+          return this.game[pluralObjectName];
+        })
+        .flat()
+        .forEach((object) => {
+          const collisionInfo = this.game.checkCollision(this, object) || {};
+          const { collision } = collisionInfo;
 
-        if (collision) {
-          this.pushObject(collisionInfo);
-        }
-      });
+          if (collision) {
+            this.pushObject(collisionInfo);
+          }
+        });
+    }
   }
 
   pushObject({ distance, sumOfRadii, dx, dy }) {
@@ -157,7 +160,7 @@ class GameObject {
 
   objectDirection() {
     if (this.animationDirection >= 0) {
-      const angleStep = 360 / this.ainmationDirection;
+      const angleStep = 360 / this.animationDirection;
 
       const angle = Math.floor(
         ((Math.atan2(
@@ -172,6 +175,7 @@ class GameObject {
       );
 
       this.spriteDirection = Math.floor(angle / angleStep);
+      console.log(angle, angleStep, this.spriteDirection);
     }
   }
 
