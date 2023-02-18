@@ -66,10 +66,10 @@ class Player {
       this.width,
       this.height
     );
-    this.drwaHitbox();
+    this.drawHitbox();
   }
 
-  drwaHitbox() {
+  drawHitbox() {
     if (this.game.debug) {
       this.game.context.beginPath();
       this.game.context.arc(
