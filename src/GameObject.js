@@ -175,7 +175,6 @@ class GameObject {
       );
 
       this.spriteDirection = Math.floor(angle / angleStep);
-      console.log(angle, angleStep, this.spriteDirection);
     }
   }
 
