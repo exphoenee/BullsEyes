@@ -1,5 +1,7 @@
 import { v4 as uuid } from "uuid";
 
+import { pluralNames } from "./constants/names";
+
 class GameObject {
   constructor(
     game,
@@ -14,11 +16,15 @@ class GameObject {
         spriteOffsetY,
       },
       animationSettings = {
-        animationFrames,
-        animationDirection,
+        animationFrames: 0,
+        animationDirection: 0,
+        spriteDirection: 0,
+        animationFrame: 0,
       },
       collisionProperties = {
+        gameObjectNames,
         collisionRadius,
+        collisionOpacity: 0.5,
       },
       positionProperties = {
         collisionX,
@@ -26,7 +32,6 @@ class GameObject {
       },
       motionSettings = {
         speedModifier,
-        collisionOpacity,
       },
     }
   ) {
@@ -50,6 +55,8 @@ class GameObject {
     this.spriteHeight = imageSettings.spriteHeight;
     this.width = this.spriteWidth;
     this.height = this.spriteHeight;
+    this.spriteOffsetX = imageSettings.spriteOffsetX;
+    this.spriteOffsetY = imageSettings.spriteOffsetY;
 
     // set the motion properties
     this.speedX = 0;
@@ -59,29 +66,30 @@ class GameObject {
     this.speedModifier = motionSettings.speedModifier;
 
     // set the position properties
-    this.collisionX = positionProperties.collisionX;
-    this.collisionY = positionProperties.collisionY;
+    if (positionProperties.collisionX && positionProperties.collisionY) {
+      this.collisionX = positionProperties.collisionX;
+      this.collisionY = positionProperties.collisionY;
+    } else {
+      this.initPosition();
+    }
 
     // set the collision properties
+    this.gameObjects = collisionProperties.gameObjects;
     this.collisionRadius = collisionProperties.collisionRadius;
     this.collisionOpacity = motionSettings.collisionOpacity;
-    this.spriteOffsetX = imageSettings.spriteOffsetX;
-    this.spriteOffsetY = imageSettings.spriteOffsetY;
 
     // set the animation properties
     this.animationFrames = animationSettings.animationFrames;
     this.animationDirection = animationSettings.animationDirection;
-    this.spriteDirection = 0;
-    this.animationFrame = 0;
+    this.spriteDirection = animationSettings.animationDirection;
+    this.animationFrame = animationSettings.animationFrame;
 
     // set the sprite position
-    this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
-    this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
+    this.updateSpritePosition();
   }
 
   initPosition() {
-    this.collisionX = this.game.width * 0.5;
-    this.collisionY = this.game.height * 0.5;
+    console.warn("initPosition() not implemented");
   }
 
   areYou(name) {
@@ -126,7 +134,20 @@ class GameObject {
     }
   }
   collision() {
-    console.warn("collision() not implemented");
+    this.collisionProperties.gameObjectNames
+      .maps((gameObjectName) => {
+        const pluralObjectName = pluralNames[gameObjectName] || gameObjectName;
+        return this.game[pluralObjectName];
+      })
+      .flat()
+      .forEach((object) => {
+        const collisionInfo = this.game.checkCollision(this, object) || {};
+        const { collision } = collisionInfo;
+
+        if (collision) {
+          this.pushObject(collisionInfo);
+        }
+      });
   }
 
   pushObject({ distance, sumOfRadii, dx, dy }) {
@@ -135,30 +156,38 @@ class GameObject {
   }
 
   objectDirection() {
-    const angleStep = 360 / this.ainmationDirection;
+    if (this.animationDirection >= 0) {
+      const angleStep = 360 / this.ainmationDirection;
 
-    const angle = Math.floor(
-      ((Math.atan2(
-        this.game.mouse.y - this.collisionY,
-        this.game.mouse.x - this.collisionX
-      ) *
-        360) /
-        (2 * Math.PI) +
-        90 +
-        360) %
-        360
-    );
+      const angle = Math.floor(
+        ((Math.atan2(
+          this.game.mouse.y - this.collisionY,
+          this.game.mouse.x - this.collisionX
+        ) *
+          360) /
+          (2 * Math.PI) +
+          90 +
+          360) %
+          360
+      );
 
-    this.spriteDirection = Math.floor(angle / angleStep);
+      this.spriteDirection = Math.floor(angle / angleStep);
+    }
   }
 
   objectMove() {
     console.warn("objectMove() not implemented");
   }
 
+  updateSpritePosition() {
+    this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
+    this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
+  }
+
   update() {
     this.draw();
     this.objectMove();
+    this.updateSpritePosition();
     this.collision();
     this.objectDirection();
   }
