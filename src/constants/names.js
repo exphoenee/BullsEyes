@@ -4,6 +4,8 @@ export const player = "player";
 export const enemy = "enemy";
 export const larva = "larva";
 export const particle = "particle";
+export const spark = "spark";
+export const firefly = "firefly";
 
 export const pluralNames = {
   [obstacle]: "obstacles",
