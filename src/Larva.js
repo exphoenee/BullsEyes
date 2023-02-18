@@ -1,47 +1,39 @@
 import { v4 as uuid } from "uuid";
 
-import Particle from "./Particle";
-import Firefly from "./Firefly";
-import Sparks from "./Sparks";
+import GameObject from "./GameObject";
 
 import { enemy, obstacle, egg, player, larva } from "./constants/names";
 
-class Larva {
+class Larva extends GameObject {
   constructor(game, position) {
-    this.game = game;
+    super(game, {
+      gameObjectName: larva,
+      imageSettings: {
+        imageId: "larva",
+        spriteWidth: 150,
+        spriteHeight: 150,
+        spriteOffsetX: 0.5,
+        spriteOffsetY: 0.7,
+      },
+      collisionProperties: {
+        gameObjectNames: [obstacle, enemy, player, egg],
+        collisionRadius: 40,
+        collisionOpacity: 0.5,
+        collisionX: position.x,
+        collisionY: position.y,
+      },
+      motionSettings: {
+        speedModifier: 0.6,
+        speedX: 0,
+        speedY: Math.random() * 3 + 0.5,
+      },
+    });
 
-    this.name = larva;
-    this.id = uuid();
-
-    // image properties
-    this.image = document.getElementById("larva");
-    this.spriteWidth = 150;
-    this.spriteHeight = 150;
-    this.width = this.spriteWidth;
-    this.height = this.spriteHeight;
-    this.spriteOffsetX = 0.5;
-    this.spriteOffsetY = 0.7;
-
-    //  position properties
-    this.collisionX = position.x;
-    this.collisionY = position.y;
-    this.initPosition();
-    this.collisionRadius = 40;
-    this.collisionOpacity = 0.5;
-    this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
-    this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
-
-    // motion properties
-    this.speedX = 0;
-    this.speedY = Math.random() * 3 + 0.5;
-    this.dx = 0;
-    this.dy = 0;
-    this.speedModifier = 0.6;
-
-    // animation properties
-    this.animationFrames = 0;
-    this.spriteDirection = 0;
-    this.animationFrame = 0;
+    console.table({
+      name: this.name,
+      collsionX: this.collisionX,
+      collisionY: this.collisionY,
+    });
 
     // particle effect properties
     this.numberOfFireFlies = 15;
@@ -54,48 +46,7 @@ class Larva {
     this.opacityModifier = 0.1;
   }
 
-  areYou(name) {
-    return this.name === name;
-  }
-
   initPosition() {}
-
-  draw() {
-    this.game.context.save();
-    this.game.context.globalAlpha = this.opacity;
-    this.game.context.drawImage(
-      this.image,
-      this.animationFrame * this.spriteWidth,
-      this.spriteDirection * this.spriteHeight,
-      this.spriteWidth,
-      this.spriteHeight,
-      this.spriteX,
-      this.spriteY,
-      this.width,
-      this.height
-    );
-    this.game.context.restore();
-    this.drwaHitbox();
-  }
-
-  drwaHitbox() {
-    if (this.game.debug) {
-      this.game.context.beginPath();
-      this.game.context.arc(
-        this.collisionX,
-        this.collisionY,
-        this.collisionRadius,
-        0,
-        Math.PI * 2,
-        false
-      );
-      this.game.context.save();
-      this.game.context.globalAlpha = this.collisionOpacity;
-      this.game.context.fill();
-      this.game.context.restore();
-      this.game.context.stroke();
-    }
-  }
 
   collision() {
     [
@@ -112,53 +63,6 @@ class Larva {
         if (object.areYou(enemy)) this.eaten();
       }
     });
-  }
-
-  pushObject({ dx, dy, distance, sumOfRadii }) {
-    this.collisionX -= (dx / distance) * (sumOfRadii - distance);
-    this.collisionY -= (dy / distance) * (sumOfRadii - distance);
-  }
-
-  objectDirection() {
-    const angleStep = 360 / 8;
-
-    const angle = Math.floor(
-      ((Math.atan2(
-        this.game.mouse.y - this.collisionY,
-        this.game.mouse.x - this.collisionX
-      ) *
-        360) /
-        (2 * Math.PI) +
-        90 +
-        360) %
-        360
-    );
-
-    this.spriteDirection = Math.floor(angle / angleStep);
-  }
-
-  addSpark() {
-    const position = {
-      x: this.collisionX,
-      y: this.collisionY,
-    };
-    for (let i = 0; i < this.numberOfSparks; i++) {
-      this.game.particles.push(
-        new Sparks(this.game, position, this.colorOfSparks)
-      );
-    }
-  }
-
-  addFireFlies() {
-    const position = {
-      x: this.collisionX,
-      y: this.collisionY,
-    };
-    for (let i = 0; i < this.numberOfFireFlies; i++) {
-      this.game.particles.push(
-        new Firefly(this.game, position, this.colorOfFireFlies)
-      );
-    }
   }
 
   removeObject() {
@@ -205,12 +109,6 @@ class Larva {
 
     this.spriteX = this.collisionX - this.width * this.spriteOffsetX;
     this.spriteY = this.collisionY - this.height * this.spriteOffsetY;
-  }
-
-  update() {
-    this.draw();
-    this.objectMove();
-    this.collision();
   }
 }
 
