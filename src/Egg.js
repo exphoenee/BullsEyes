@@ -1,5 +1,3 @@
-import { v4 as uuid } from "uuid";
-
 import Larva from "./Larva.js";
 import GameObject from "./GameObject.js";
 
