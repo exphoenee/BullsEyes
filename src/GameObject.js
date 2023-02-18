@@ -6,7 +6,7 @@ class GameObject {
   constructor(
     game,
     {
-      name,
+      gameObjectName,
       isSingleton = false,
       imageSettings = {
         imageId,
@@ -14,25 +14,31 @@ class GameObject {
         spriteHeight,
         spriteOffsetX,
         spriteOffsetY,
+        variant,
       },
       animationSettings = {
-        animationFrames,
-        animationDirection,
-        spriteDirection,
-        animationFrame,
+        animationFrames: 0,
+        animationDirection: 0,
+        spriteDirection: 0,
+        animationFrame: 0,
       },
       collisionProperties = {
-        gameObjectNames,
+        gameObjectNames: [],
         collisionRadius,
-        collisionOpacity,
+        collisionOpacity: 0.5,
         collisionX,
         collisionY,
       },
-      motionSettings = {
-        speedModifier,
-      },
+      motionSettings = { speedX: 0, speedY: 0, speedModifier: 1 },
     }
   ) {
+    console.log("singleTone:", isSingleton);
+    console.log("gameObjectName:", gameObjectName);
+    console.log("imageSettings:", imageSettings);
+    console.log("animationSettings:", animationSettings);
+    console.log("collisionProperties:", collisionProperties);
+    console.log("motionSettings:", motionSettings);
+
     if (isSingleton) {
       if (typeof GameObject.instance === "object") {
         return GameObject.instance;
@@ -44,47 +50,70 @@ class GameObject {
     this.game = game;
 
     // set the name and id
-    this.name = name;
+    if (gameObjectName) {
+      this.name = gameObjectName;
+    } else {
+      throw new Error("gameObjectName is required");
+    }
     this.id = uuid();
 
     // set the image properties
-    this.image = document.getElementById(imageSettings.imageId);
-    this.spriteWidth = imageSettings.spriteWidth;
-    this.spriteHeight = imageSettings.spriteHeight;
-    this.width = this.spriteWidth;
-    this.height = this.spriteHeight;
-    this.spriteOffsetX = imageSettings.spriteOffsetX;
-    this.spriteOffsetY = imageSettings.spriteOffsetY;
+    if (imageSettings) {
+      this.image = document.getElementById(imageSettings.imageId);
+      this.spriteWidth = imageSettings.spriteWidth;
+      this.spriteHeight = imageSettings.spriteHeight;
+      this.width = this.spriteWidth;
+      this.height = this.spriteHeight;
+      this.spriteOffsetX = imageSettings.spriteOffsetX;
+      this.spriteOffsetY = imageSettings.spriteOffsetY;
 
-    // set the motion properties
-    this.speedX = 0;
-    this.speedY = 0;
-    this.dx = 0;
-    this.dy = 0;
-    this.speedModifier = motionSettings.speedModifier;
-
-    // set the position properties
-    if (collisionProperties.collisionX && collisionProperties.collisionY) {
-      this.collisionX = this.collisionProperties.collisionX;
-      this.collisionY = this.collisionProperties.collisionY;
+      if (imageSettings?.variant) {
+        this.variant = imageSettings.variant;
+        this.spriteDirection = this.variant;
+      } else {
+        this.variant = false;
+      }
     } else {
-      this.collisionX;
-      this.collisionY;
-      this.initPosition();
+      throw new Error("imageSettings is required");
     }
 
-    // set the collision properties
-    this.collisionObjectNames = collisionProperties.gameObjectNames || [];
-    this.collisionRadius = collisionProperties.collisionRadius;
-    this.collisionOpacity = motionSettings.collisionOpacity || 0.5;
+    // set the motion properties
+    if (motionSettings) {
+      this.speedX = motionSettings.speedX;
+      this.speedY = motionSettings.speedY;
+      this.dx;
+      this.dy;
+      this.speedModifier = motionSettings.speedModifier;
+    }
+
+    if (collisionProperties) {
+      // set the position properties
+      if (collisionProperties.collisionX && collisionProperties.collisionY) {
+        this.collisionX = this.collisionProperties.collisionX;
+        this.collisionY = this.collisionProperties.collisionY;
+      } else {
+        this.collisionX;
+        this.collisionY;
+        this.initPosition();
+      }
+
+      // set the collision properties
+      this.collisionObjectNames = collisionProperties.gameObjectNames;
+      this.collisionRadius = collisionProperties.collisionRadius;
+      this.collisionOpacity = motionSettings.collisionOpacity;
+    }
 
     // set the animation properties
-    this.animationFrames = animationSettings.animationFrames || 0;
-    this.animationDirection = animationSettings.animationDirection || 0;
-    this.spriteDirection = animationSettings.animationDirection || 0;
-    this.animationFrame = animationSettings.animationFrame || 0;
+    if (!this.variant && animationSettings) {
+      this.animationFrames = animationSettings.animationFrames;
+      this.animationDirection = animationSettings.animationDirection;
+      this.spriteDirection = animationSettings.animationDirection;
+      this.animationFrame = animationSettings.animationFrame;
+    }
 
     // set the sprite position
+    this.spriteX;
+    this.spriteY;
     this.updateSpritePosition();
   }
 
