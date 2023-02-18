@@ -7,7 +7,7 @@ import { player } from "./constants/names";
 class Player extends GameObject {
   constructor(game) {
     super(game, {
-      name: player,
+      gameObjectName: player,
       isSingleton: true,
       imageSettings: {
         imageId: "bull",
