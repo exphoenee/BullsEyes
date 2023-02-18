@@ -241,7 +241,6 @@ class Game {
 
   addEgg() {
     this.eggs.push(new Egg(this));
-    console.log(this.eggs);
   }
 
   animate(timeStamp) {
