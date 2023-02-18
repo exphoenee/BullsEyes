@@ -36,6 +36,7 @@ class GameObject {
       motionSettings = { speedX: 0, speedY: 0, speedModifier: 1 },
     }
   ) {
+    console.table({name: this.name, ...collisionProperties})
     if (isSingleton) {
       if (typeof GameObject.instance === "object") {
         return GameObject.instance;
@@ -91,8 +92,8 @@ class GameObject {
       this.margin = collisionProperties.margin;
       // set the position properties
       if (collisionProperties.collisionX && collisionProperties.collisionY) {
-        this.collisionX = this.collisionProperties.collisionX;
-        this.collisionY = this.collisionProperties.collisionY;
+        this.collisionX = collisionProperties.collisionX;
+        this.collisionY = collisionProperties.collisionY;
       } else {
         this.collisionX;
         this.collisionY;
@@ -234,6 +235,18 @@ class GameObject {
     for (let i = 0; i < this.numberOfSparks; i++) {
       this.game.particles.push(
         new Sparks(this.game, position, this.colorOfSparks)
+      );
+    }
+  }
+
+  addFireFlies() {
+    const position = {
+      x: this.collisionX,
+      y: this.collisionY,
+    };
+    for (let i = 0; i < this.numberOfFireFlies; i++) {
+      this.game.particles.push(
+        new Firefly(this.game, position, this.colorOfFireFlies)
       );
     }
   }
