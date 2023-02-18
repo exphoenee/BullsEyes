@@ -237,6 +237,7 @@ class Game {
 
   addEnemy() {
     this.enemies.push(new Enemy(this));
+    console.log(this.enemies);
   }
 
   addEgg() {
