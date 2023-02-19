@@ -12,7 +12,7 @@ class Obstacle extends GameObject {
         spriteHeight: 250,
         spriteOffsetX: 0.49,
         spriteOffsetY: 0.85,
-        variant: Math.floor(Math.random() * 3), //the image must linearized agains 4x3 grid
+        variant: Math.floor(Math.random() * 12),
       },
       collisionProperties: {
         collisionRadius: 40,
