@@ -67,6 +67,7 @@ class GameObject {
       if (imageSettings?.variant) {
         this.variant = imageSettings.variant;
         this.spriteDirection = this.variant;
+        this.animationFrame = 0;
       } else {
         this.variant = false;
       }
@@ -101,11 +102,17 @@ class GameObject {
     }
 
     // set the animation properties
-    if (!this.variant && animationSettings) {
+    if (
+      this.variant === undefined ||
+      (this.variant === false && animationSettings)
+    ) {
       this.animationFrames = animationSettings.animationFrames;
       this.animationDirection = animationSettings.animationDirection;
       this.spriteDirection = animationSettings.animationDirection;
       this.animationFrame = animationSettings.animationFrame;
+    }
+
+    if (this.name === "obstacle") {
     }
 
     // set the sprite position
