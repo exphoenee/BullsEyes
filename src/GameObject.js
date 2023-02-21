@@ -38,7 +38,7 @@ class GameObject {
   ) {
     if (isSingleton) {
       if (typeof GameObject.instance === "object") {
-        return GameObject.instance;
+        throw new Error("GameObject is a singleton");
       }
       GameObject.instance = this;
     }
@@ -174,11 +174,13 @@ class GameObject {
         })
         .flat()
         .forEach((object) => {
-          const collisionInfo = this.game.checkCollision(this, object) || {};
-          const { collision } = collisionInfo;
+          if (object.id !== this.id) {
+            const collisionInfo = this.game.checkCollision(this, object) || {};
+            const { collision } = collisionInfo;
 
-          if (collision) {
-            this.pushObject(collisionInfo);
+            if (collision) {
+              this.pushObject(collisionInfo);
+            }
           }
         });
     }
