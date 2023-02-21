@@ -15,7 +15,7 @@ class Player extends GameObject {
   constructor(game) {
     super(game, {
       gameObjectName: player,
-      isSingleton: true,
+      isSingleton: false,
       imageSettings: {
         imageId: "bull",
         spriteWidth: 255,
@@ -28,7 +28,7 @@ class Player extends GameObject {
         animationDirection: 8,
       },
       collisionProperties: {
-        gameObjectNames: [obstacle],
+        gameObjectNames: [obstacle, player],
         collisionRadius: 50,
         collisionOpacity: 0.5,
       },
