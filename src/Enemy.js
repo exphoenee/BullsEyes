@@ -15,7 +15,7 @@ class Enemy extends GameObject {
         variant: Math.floor(Math.random() * 4),
       },
       collisionProperties: {
-        gameObjectNames: [obstacle, player],
+        gameObjectNames: [obstacle, player, enemy],
         collisionRadius: 50,
       },
       motionSettings: {
