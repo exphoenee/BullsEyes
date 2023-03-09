@@ -7,7 +7,7 @@ Installation
 To play Egg Savior, simply clone the repository or download the source code and open the index.html file in your preferred web browser.
 In the repository folder `npm i` and `npm run dev`.
 
-(Or you can try it out here!)[https://bullseyes.netlify.app/]
+[Or you can try it out here!](https://bullseyes.netlify.app/)
 
 How to Play
 The objective of the game is to prevent the monsters from reaching the left side of the screen and stealing the eggs and larvae. The player controls a character with the mouse, and can move the character by moving the mouse. The character can push the monsters to the right to prevent them from moving towards the left.
