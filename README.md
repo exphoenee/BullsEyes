@@ -1,6 +1,6 @@
 BullsEye
 BullsEye is a simple game developed in JavaScript using object-oriented programming. In this game, the player controls a character with the mouse and must save the eggs and larvae from monsters that appear on the right side of the screen and move towards the left side. The game uses basic physics and collision detection to allow objects to collide and push each other.
-I made that according to the ( https://www.youtube.com/watch?v=U34l-Xz5ynU&t=193s )[FreeCodeCamp JS game crash course].
+I made that according to the (FreeCodeCamp JS game crash course)[https://www.youtube.com/watch?v=U34l-Xz5ynU&t=193s].
 But i refactored totally.
 
 Installation
