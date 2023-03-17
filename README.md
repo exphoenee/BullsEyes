@@ -14,10 +14,4 @@ The objective of the game is to prevent the monsters from reaching the left side
 
 To win the game, the player must prevent all of the eggs and larvae from being stolen by the monsters. If a monster steals an egg or larvae, the player loses a life. The player starts the game with three lives, and loses a life each time a monster steals an egg or larvae.
 
-The game is over when the player loses all three lives. The player can restart the game by refreshing the page.
-
-Credits
-Egg Savior was developed by [Your Name] as a project for [Course Name]. The game uses [insert libraries or assets used in the game].
-
-License
-This project is licensed under the MIT license.
+The game is over when the player score is -21. The player can restart the game by refreshing the page.
